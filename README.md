@@ -1,3 +1,3 @@
 # qadiroon_front_end
 
-A new Flutter project.
+front end for the Qadiroon web platform
