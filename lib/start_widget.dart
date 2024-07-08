@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/login_widget.dart';
 
 class StartScreen extends StatelessWidget
@@ -23,14 +24,14 @@ class StartScreen extends StatelessWidget
               'قادرون'
             ),
             SizedBox(height: 128),
-            TextButton(onPressed: (){showDialog(context: context, builder: (context) => LoginMenu(type: LoginType.B));}, child: Text(
+            TextButton(onPressed: (){showDialog(context: context, builder: (context) => LoginMenu(userType: UserType.B));}, child: Text(
               style: TextStyle(fontSize: 32,
                 color: Colors.blueGrey.shade500
               ),
               'مستفيد'
             )),
             SizedBox(height: 12),
-            TextButton(onPressed: (){showDialog(context: context, builder: (context) => LoginMenu(type: LoginType.S,));}, child: Text(
+            TextButton(onPressed: (){showDialog(context: context, builder: (context) => LoginMenu(userType: UserType.S,));}, child: Text(
               style: TextStyle(fontSize: 32,
                 color: Colors.blueGrey.shade500
               ),
