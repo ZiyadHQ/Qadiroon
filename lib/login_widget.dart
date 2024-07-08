@@ -52,8 +52,12 @@ class _LoginMenu extends State<LoginMenu>
     {
       print("data inserted incorrectly");
       simple_alert_showWidget(context, 'تأكد انك أدخلت جميع البيانات بشكل صحيح');
+      return;
     }
-
+    DateTime recordTime = DateTime.now();
+    PassWordHash = BCrypt.hashpw(PassWord, BCrypt.gensalt());
+    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, PassWordHash: PassWordHash, userType: userType);
+    record.checkRegisterAttempt();
   }
   void _checkInputLogIn()
   {
@@ -63,11 +67,15 @@ class _LoginMenu extends State<LoginMenu>
     {
       print("data inserted incorrectly");
       simple_alert_showWidget(context, 'تأكد انك أدخلت جميع البيانات بشكل صحيح');
+      return;
     }
     DateTime recordTime = DateTime.now();
     PassWordHash = BCrypt.hashpw(PassWord, BCrypt.gensalt());
     LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, PassWordHash: PassWordHash, userType: userType);
     print(record);
+    //record.sendRecord();
+    record.checkLogInAttempt();
+    simple_alert_showWidget(context, 'تم تسجيل الدخول بنجاح');
   }
 
   String Name = 'Empty';

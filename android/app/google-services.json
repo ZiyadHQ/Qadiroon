@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "535590890295",
+    "project_id": "qadiroon-db",
+    "storage_bucket": "qadiroon-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535590890295:android:ca8f8c10aa8a51b8df88b2",
+        "android_client_info": {
+          "package_name": "com.example.qadiroon_front_end"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxHfd7Hyik2obLVfolKj9mvA-S1wz_BUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
