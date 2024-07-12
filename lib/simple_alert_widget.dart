@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 
-void simple_alert_showWidget(BuildContext context, String message, {Color backgroundColor = Colors.white})
+void simple_alert_showWidget(BuildContext context, String message, {Color backgroundColor = Colors.white, bool isDismissible = true})
 {
-  showModalBottomSheet(context: context, builder: (context) => SimpleAlert(Message: message, backgroundColor: backgroundColor));
+  showModalBottomSheet(context: context, builder: (context) => SimpleAlert(Message: message, backgroundColor: backgroundColor),isDismissible: isDismissible);
 }
 
 class SimpleAlert extends StatelessWidget

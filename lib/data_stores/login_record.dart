@@ -1,4 +1,6 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/login_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,10 +9,10 @@ import 'package:qadiroon_front_end/tools/query_tools.dart';
 
 class LoginRecord
 {
-  LoginRecord({required this.Name, required this.PassWordHash, required this.issueTime, required this.userType});
+  LoginRecord({required this.Name, required this.passWord, required this.issueTime, required this.userType});
   
   String Name;
-  String PassWordHash;
+  String passWord;
   DateTime issueTime;
   UserType userType;
 
@@ -18,7 +20,7 @@ class LoginRecord
   String toString() {
     String buffer = '';
     buffer += '$Name\n';
-    buffer += '$PassWordHash\n';
+    buffer += '$passWord\n';
     buffer += '$issueTime\n';
     buffer += '$userType\n';
     return buffer;
@@ -28,7 +30,7 @@ class LoginRecord
   {
     return {
       'Name': Name,
-      'PassWordHash': PassWordHash,
+      'PassWordHash': passWord,
       'issueTime': issueTime,
       'userType': userType.toString()
     };
@@ -36,47 +38,62 @@ class LoginRecord
 
   void sendRecord() async
   {
+    throw UnimplementedError();
+  }
+
+  Future<UserCredential?> checkLogInAttempt() async
+  {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    UserCredential userCredential;
     try
     {
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
-      await firestore.collection('loginRecords').add(toMap());
-      print('record sent successfully');
-    } catch(e)
-    {
-      print('Error sending data to DB: $e');
-    }
-  }
-
-  bool checkLogInAttempt()
-  {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference logInRecords = firestore.collection('loginRecords');
-    Query query = logInRecords.where('Name', isEqualTo: this.Name);
-    print('printing query:');
-    query.get().then(
-      (querySnapshot)
-      {
-        for(var docSnapshot in querySnapshot.docs)
-        {
-          print('${docSnapshot.id} => ${docSnapshot.data()}');
-        }
-      }
+      userCredential = await _auth.signInWithEmailAndPassword(
+        email: '$Name@testmail.com',
+        password: passWord
       );
-    return true;
+    }
+    catch(e)
+    {
+      print('Error signing in : $e');
+      return null;
+    }
+
+    try
+    {
+      FirebaseFirestore _database = FirebaseFirestore.instance;
+      DocumentSnapshot _snapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
+      print(  _snapshot.data() as Map<String, dynamic>?);
+    } catch (e)
+    {
+      print('Error retrieving user data : $e');
+      return null;
+    }
+
+    return userCredential;
   }
 
-  void checkRegisterAttempt() async
+  Future<bool> checkRegisterAttempt() async
   {
-    bool nameCheck = await QueryTools.doesDocWithNameExist(this.Name);
-    if(nameCheck)
+
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    try
     {
-      print('Error: UserName with Name: $Name already exists!');
-      return;
-    }
-    else
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: '$Name@testmail.com',
+        password: passWord
+      );
+      print('account ID: ${userCredential.user!.uid}');
+      FirebaseFirestore _database = FirebaseFirestore.instance;
+    _database.collection('User').doc(userCredential.user!.uid).set(
+      toMap()
+    );
+    } catch (e)
     {
-      sendRecord();
+      print('Error: $e');
+      return false;
     }
+
+    return true;
   }
 
 }

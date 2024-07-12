@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
 import 'package:qadiroon_front_end/data_stores/login_record.dart';
@@ -13,16 +14,22 @@ const UserTypeString =
   UserType.S: 'مقدم خدمة'
 };
 
+void testFunct()
+{
+
+}
+
 class LoginMenu extends StatefulWidget
 {
 
-  LoginMenu({required this.userType});
+  LoginMenu({required this.userType,  this.changeBaseWidget = testFunct });
 
   final UserType userType;
+  Function changeBaseWidget;
 
   State<StatefulWidget> createState()
   {
-    return _LoginMenu(userType: userType);
+    return _LoginMenu(userType: userType, changeBaseWidget: changeBaseWidget);
   }
   
 }
@@ -30,7 +37,7 @@ class LoginMenu extends StatefulWidget
 class _LoginMenu extends State<LoginMenu>
 {
 
-  _LoginMenu({required this.userType});
+  _LoginMenu({required this.userType, required this.changeBaseWidget});
 
   UserType userType;
 
@@ -41,9 +48,8 @@ class _LoginMenu extends State<LoginMenu>
   void _savePassWord(String password)
   {
     PassWord = password;
-    PassWordHash = BCrypt.hashpw(PassWord, BCrypt.gensalt());
   }
-  void _checkInputRegister()
+  void _checkInputRegister() async
   {
     bool NameCheck = Name == 'Empty';
     bool PassWordCheck = PassWord == 'Empty';
@@ -54,13 +60,25 @@ class _LoginMenu extends State<LoginMenu>
       simple_alert_showWidget(context, 'تأكد انك أدخلت جميع البيانات بشكل صحيح');
       return;
     }
+    simple_alert_showWidget(context, 'محاولة تسجيل حساب جديد, يرجى الانتظار', isDismissible: false);
     DateTime recordTime = DateTime.now();
-    PassWordHash = BCrypt.hashpw(PassWord, BCrypt.gensalt());
-    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, PassWordHash: PassWordHash, userType: userType);
-    record.checkRegisterAttempt();
+    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, passWord: PassWord, userType: userType);
+
+    bool checkAuthRegister = await record.checkRegisterAttempt();
+
+    Navigator.pop(context);
+
+    if(checkAuthRegister)
+    {
+      simple_alert_showWidget(context, 'تم التسجيل بنجاح');
+    }
+    else
+    {
+      simple_alert_showWidget(context, 'فشل التسجيل');
+    }
   }
-  void _checkInputLogIn()
-  {
+  Future<void> _checkInputLogIn()
+  async {
     bool NameCheck = Name == 'Empty';
     bool PassWordCheck = PassWord == 'Empty';
     if(NameCheck || PassWordCheck)
@@ -70,18 +88,30 @@ class _LoginMenu extends State<LoginMenu>
       return;
     }
     DateTime recordTime = DateTime.now();
-    PassWordHash = BCrypt.hashpw(PassWord, BCrypt.gensalt());
-    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, PassWordHash: PassWordHash, userType: userType);
+    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, passWord: PassWord, userType: userType);
     print(record);
-    //record.sendRecord();
-    record.checkLogInAttempt();
-    simple_alert_showWidget(context, 'تم تسجيل الدخول بنجاح');
+
+    simple_alert_showWidget(context, 'محاولة تسجيل الدخول, يرجى الانتظار', isDismissible: false);
+
+    UserCredential? userCredential = await record.checkLogInAttempt();
+
+    Navigator.pop(context);
+
+    bool loginCheck = userCredential != null; 
+    if(loginCheck)
+    {
+      simple_alert_showWidget(context, 'تم تسجيل الدخول بنجاح');  
+    }
+    else
+    {
+      simple_alert_showWidget(context, 'تسجيل الدخول فشل');
+    }
   }
 
   String Name = 'Empty';
   String PassWord = 'Empty';
   String PassWordHash = 'Empty';
-
+  Function changeBaseWidget;
 
   Widget build(BuildContext context)
   {
@@ -118,7 +148,7 @@ class _LoginMenu extends State<LoginMenu>
                 label: const Text('كلمة السر')
               ),
             ),
-            Text('يجب ان تحتوي كلمة السر على حرف كابيتال ورموز مميزو وأرقام'),
+            Text('يجب ان تحتوي كلمة السر على حرف كابيتال ورموز مميزة وأرقام'),
             SizedBox(height: 96),
             Row(
                 children: [
