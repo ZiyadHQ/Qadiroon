@@ -28,6 +28,12 @@ class StartScreen extends StatelessWidget
               'قادرون'
             ),
             SizedBox(height: 128),
+            Text(
+              'سجل كـ',
+            style: TextStyle(
+              fontSize: 32
+            )
+            ),
             TextButton(onPressed: (){showDialog(context: context, builder: (context) => LoginMenu(userType: UserType.B, changeBaseWidget: changeBaseWidget,));}, child: Text(
               style: TextStyle(fontSize: 32,
                 color: Colors.blueGrey.shade500

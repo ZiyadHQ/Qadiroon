@@ -1,4 +1,6 @@
 
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
@@ -100,14 +102,20 @@ class _LoginMenu extends State<LoginMenu>
     bool loginCheck = userCredential != null; 
     if(loginCheck)
     {
-      simple_alert_showWidget(context, 'تم تسجيل الدخول بنجاح');  
+      FirebaseFirestore _database = FirebaseFirestore.instance;
+      DocumentSnapshot docSnapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
+      Map<String, dynamic> userData =  docSnapshot.data() as Map<String, dynamic>;
+      String user_name = userData['Name'];
+
+      simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');
+
     }
     else
     {
       simple_alert_showWidget(context, 'تسجيل الدخول فشل');
     }
   }
-
+  
   String Name = 'Empty';
   String PassWord = 'Empty';
   String PassWordHash = 'Empty';
