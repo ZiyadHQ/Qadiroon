@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/login_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qadiroon_front_end/simple_alert_widget.dart';
+import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 import 'package:qadiroon_front_end/tools/query_tools.dart';
 
 class LoginRecord

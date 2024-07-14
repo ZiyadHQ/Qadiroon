@@ -4,9 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bcrypt/bcrypt.dart';
+import 'package:qadiroon_front_end/beneficiary_widget.dart';
 import 'package:qadiroon_front_end/data_stores/login_record.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
-import 'package:qadiroon_front_end/simple_alert_widget.dart';
+import 'package:qadiroon_front_end/main.dart';
+import 'package:qadiroon_front_end/service_provider_widget.dart';
+import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 
 final RegExp passWordRules = RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
 
@@ -93,7 +96,8 @@ class _LoginMenu extends State<LoginMenu>
     LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, passWord: PassWord, userType: userType);
     print(record);
 
-    simple_alert_showWidget(context, 'محاولة تسجيل الدخول, يرجى الانتظار', isDismissible: false);
+    //simple_alert_showWidget(context, 'محاولة تسجيل الدخول, يرجى الانتظار', isDismissible: false);
+    simple_rotating_loading_screen(context, message: 'محاولة تسجيل الدخول, يرجى الانتظار', backgroundColor: Colors.amber);
 
     UserCredential? userCredential = await record.checkLogInAttempt();
 
@@ -107,7 +111,11 @@ class _LoginMenu extends State<LoginMenu>
       Map<String, dynamic> userData =  docSnapshot.data() as Map<String, dynamic>;
       String user_name = userData['Name'];
 
+      Navigator.pop(context);
       simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');
+      main_switchBaseWidget(
+        (record.userType == UserType.S)? ServiceProviderScreen(user: userCredential) : BeneficiaryScreen(user: userCredential)
+      );
 
     }
     else
@@ -115,7 +123,7 @@ class _LoginMenu extends State<LoginMenu>
       simple_alert_showWidget(context, 'تسجيل الدخول فشل');
     }
   }
-  
+
   String Name = 'Empty';
   String PassWord = 'Empty';
   String PassWordHash = 'Empty';

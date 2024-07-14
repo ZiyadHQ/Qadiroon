@@ -4,6 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'firebase_options.dart';
 
+GlobalKey<_baseWidgetState> baseWidgetKey = GlobalKey<_baseWidgetState>();
+
+void main_switchBaseWidget(Widget newWidget)
+{
+  baseWidgetKey.currentState?._changeWidget(newWidget);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -12,7 +19,7 @@ void main() async {
   print('Started App!');
   runApp(
     MaterialApp(
-      home: baseWidget(BaseWidget: StartScreen())
+      home: baseWidget(initialWidget: StartScreen(), key: baseWidgetKey,)
     )
   );
 }
@@ -20,13 +27,13 @@ void main() async {
 class baseWidget extends StatefulWidget
 {
 
-  baseWidget({super.key, required this.BaseWidget});
+  final Widget initialWidget;
 
-  Widget BaseWidget;
+  baseWidget({required Key key, required this.initialWidget}) : super(key: key);
 
   State<StatefulWidget> createState()
   {
-    return _baseWidgetState( baseWidget: BaseWidget );
+    return _baseWidgetState();
   }
   
 }
@@ -34,23 +41,28 @@ class baseWidget extends StatefulWidget
 class _baseWidgetState extends State<baseWidget>
 {
 
-  _baseWidgetState({required this.baseWidget});
+  late Widget _currentWidget;
 
-  Widget baseWidget;
+  @override
+  void initState()
+  {
+    super.initState();
+    _currentWidget = widget.initialWidget;
+  }
 
   void _changeWidget(Widget newWidget)
   {
     setState(
       ()
       {
-        baseWidget = newWidget;
+        _currentWidget = newWidget;
       }
     );
   }
 
   Widget build(BuildContext context)
   {
-    return baseWidget;
+    return _currentWidget;
   }
   
 }
