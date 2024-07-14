@@ -1,2 +1,2 @@
-# Qadiroon
-Qadiroon is a web platform dedicated to the service of the elderly.
+# Qadiroon User front end
+واجهة المستخدم لمنصة قادرون (مقدم خدمة, مستفيد)
