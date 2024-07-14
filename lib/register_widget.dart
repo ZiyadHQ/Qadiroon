@@ -1,10 +1,9 @@
 
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_widget.dart';
+import 'package:bcrypt/bcrypt.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
 import 'package:qadiroon_front_end/data_stores/login_record.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
@@ -12,28 +11,40 @@ import 'package:qadiroon_front_end/main.dart';
 import 'package:qadiroon_front_end/service_provider_widget.dart';
 import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 
+final RegExp passWordRules = RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+
+const UserTypeString = 
+{
+  UserType.B: 'مستفيد',
+  UserType.S: 'مقدم خدمة'
+};
+
 void testFunct()
 {
 
 }
 
-class LoginMenu extends StatefulWidget
+class RegisterMenu extends StatefulWidget
 {
 
-  LoginMenu({super.key});
+  RegisterMenu({required this.userType,  this.changeBaseWidget = testFunct });
+
+  final UserType userType;
+  Function changeBaseWidget;
 
   State<StatefulWidget> createState()
   {
-    return _LoginMenu();
+    return _RegisterMenu(userType: userType, changeBaseWidget: changeBaseWidget);
   }
   
 }
 
-class _LoginMenu extends State<LoginMenu>
+class _RegisterMenu extends State<RegisterMenu>
 {
 
-  _LoginMenu();
+  _RegisterMenu({required this.userType, required this.changeBaseWidget});
 
+  UserType userType;
 
   void _saveName(String name)
   {
@@ -43,50 +54,39 @@ class _LoginMenu extends State<LoginMenu>
   {
     PassWord = password;
   }
-  
-  void _checkInputLogIn()async
+  void _checkInputRegister() async
   {
     bool NameCheck = Name == 'Empty';
     bool PassWordCheck = PassWord == 'Empty';
+    PassWordCheck |= !passWordRules.hasMatch(PassWord);
     if(NameCheck || PassWordCheck)
     {
+      print("data inserted incorrectly");
       simple_alert_showWidget(context, 'تأكد انك أدخلت جميع البيانات بشكل صحيح');
       return;
     }
+    simple_alert_showWidget(context, 'محاولة تسجيل حساب جديد, يرجى الانتظار', isDismissible: false);
     DateTime recordTime = DateTime.now();
-    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, passWord: PassWord, userType: UserType.B);
+    LoginRecord record = LoginRecord(Name: Name, issueTime: recordTime, passWord: PassWord, userType: userType);
 
-    //simple_alert_showWidget(context, 'محاولة تسجيل الدخول, يرجى الانتظار', isDismissible: false);
-    simple_rotating_loading_screen(context, message: 'محاولة تسجيل الدخول, يرجى الانتظار', backgroundColor: Colors.amber);
-
-    UserCredential? userCredential = await record.checkLogInAttempt();
+    bool checkAuthRegister = await record.checkRegisterAttempt();
 
     Navigator.pop(context);
 
-    bool loginCheck = userCredential != null; 
-    if(loginCheck)
+    if(checkAuthRegister)
     {
-      FirebaseFirestore _database = FirebaseFirestore.instance;
-      DocumentSnapshot docSnapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
-      Map<String, dynamic> userData =  docSnapshot.data() as Map<String, dynamic>;
-      String user_name = userData['Name'];
-
-      Navigator.pop(context);
-      simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');
-      main_switchBaseWidget(
-        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: userCredential) : BeneficiaryScreen(user: userCredential, initialWidget: BeneficiaryHomeScreen(), key: globalBenificiaryStateKey,)
-      );
-
+      simple_alert_showWidget(context, 'تم التسجيل بنجاح');
     }
     else
     {
-      simple_alert_showWidget(context, 'تسجيل الدخول فشل');
+      simple_alert_showWidget(context, 'فشل التسجيل');
     }
   }
 
   String Name = 'Empty';
   String PassWord = 'Empty';
   String PassWordHash = 'Empty';
+  Function changeBaseWidget;
 
   Widget build(BuildContext context)
   {
@@ -103,7 +103,7 @@ class _LoginMenu extends State<LoginMenu>
                 fontSize: 64,
                 fontWeight: FontWeight.w600
               ),
-              'تسجيل الدخول'
+              UserTypeString[this.userType]!
             ),
             TextField(
               onChanged: _saveName,
@@ -128,8 +128,8 @@ class _LoginMenu extends State<LoginMenu>
             Row(
                 children: [
                   const Spacer(),
-                  TextButton(onPressed: (){print("Name: " + Name + " - PassWord: " + PassWord + " - Hash: " + PassWordHash); _checkInputLogIn();}, child: Text('تسجيل دخول')),
-                  const Spacer(),
+                  TextButton(onPressed: (){print("Name: " + Name + " - PassWord: " + PassWord + " - Hash: " + PassWordHash); _checkInputRegister();}, child: const Text('تسجيل')),
+                  const Spacer()
                 ],
               ),
               Spacer(),

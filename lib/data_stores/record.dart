@@ -1,5 +1,5 @@
 
-import 'package:qadiroon_front_end/login_widget.dart';
+import 'package:qadiroon_front_end/register_widget.dart';
 
 enum UserType
 {
