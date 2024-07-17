@@ -1,6 +1,13 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+void BusyWait(int milis)
+{
+  final int end = DateTime.now().microsecondsSinceEpoch + milis;
+  while(DateTime.now().microsecondsSinceEpoch < end)
+  {}
+}
+
 class QueryTools
 {
 

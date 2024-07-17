@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_credits_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_game_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_info_widget.dart';
@@ -65,6 +66,8 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
   Widget build(BuildContext context)
   {
     return Scaffold(
+      drawerScrimColor: Colors.amber,
+      backgroundColor: Colors.blueGrey.shade700,
       appBar: Tab(child: ListView(
         scrollDirection:  Axis.horizontal,
         children: [
@@ -88,6 +91,7 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
                   context: context,
                   builder: (context) => 
                   Scaffold(
+                    backgroundColor: Colors.transparent,
                     body: Center(
                       child: Row(
                       children: [
@@ -106,16 +110,16 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
                   )
                 );
               },
-              icon: Icon(Icons.logout_sharp),
+              icon: Icon(color: Colors.red.shade900,Icons.logout_sharp),
             ),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryHomeScreen){Beneficiary_changeBaseWidget(BeneficiaryHomeScreen());}}, icon: Icon(Icons.home_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryHomeScreen){Beneficiary_changeBaseWidget(BeneficiaryHomeScreen());}}, icon: (_currentWidget is BeneficiaryHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen()){Beneficiary_changeBaseWidget(BeneficiaryGameScreen());}}, icon: Icon(Icons.gamepad_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen()){Beneficiary_changeBaseWidget(BeneficiaryGameScreen());}}, icon: (_currentWidget is BeneficiaryGameScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen()){Beneficiary_changeBaseWidget(BeneficiaryInfoScreen());}}, icon: Icon(Icons.account_box)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryInfoScreen()){Beneficiary_changeBaseWidget(BeneficiaryInfoScreen());}}, icon: (_currentWidget is BeneficiaryInfoScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){}, icon: Icon(Icons.info)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen());}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
           ],
         ),
       ),
