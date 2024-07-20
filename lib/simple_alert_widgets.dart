@@ -13,7 +13,8 @@ void simple_rotating_loading_screen(BuildContext context, {String message = '', 
     children: [
       StyledText(text: message, size: 24, color: backgroundColor, fontFamily: 'default'),
       Spacer(),
-      CircularProgressIndicator.adaptive(backgroundColor: backgroundColor)
+      CircularProgressIndicator.adaptive(backgroundColor: backgroundColor),
+      Spacer()
     ],
   )),
   isDismissible: isDismissible 
