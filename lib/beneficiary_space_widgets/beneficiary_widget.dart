@@ -74,7 +74,9 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
           SizedBox(width: 32,),
           StyledText(text: userData?['Name']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri'),
           SizedBox(width: 72,),
-          StyledText(text: userData?['userType']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri')
+          StyledText(text: userData?['userType']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri'),
+          SizedBox(width: 72,),
+          StyledText(text: FirebaseAuth.instance.currentUser?.uid?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri')
         ],
       )),
       body: Center(

@@ -9,7 +9,11 @@ void simple_alert_showWidget(BuildContext context, String message, {Color backgr
 
 void simple_rotating_loading_screen(BuildContext context, {String message = '', Color backgroundColor = Colors.white, bool isDismissible = true})
 {
-  showModalBottomSheet(context: context, builder: ((context) => Column(
+
+  WidgetsBinding.instance.addPostFrameCallback
+  (
+    (_){
+      showModalBottomSheet(context: context, builder: ((context) => Column(
     children: [
       StyledText(text: message, size: 24, color: backgroundColor, fontFamily: 'default'),
       Spacer(),
@@ -18,7 +22,20 @@ void simple_rotating_loading_screen(BuildContext context, {String message = '', 
     ],
   )),
   isDismissible: isDismissible 
+  );    
+    }
   );
+
+  /*showModalBottomSheet(context: context, builder: ((context) => Column(
+    children: [
+      StyledText(text: message, size: 24, color: backgroundColor, fontFamily: 'default'),
+      Spacer(),
+      CircularProgressIndicator.adaptive(backgroundColor: backgroundColor),
+      Spacer()
+    ],
+  )),
+  isDismissible: isDismissible 
+  );*/
 }
 
 class SimpleAlert extends StatelessWidget

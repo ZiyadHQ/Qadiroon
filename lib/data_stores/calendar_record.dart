@@ -39,5 +39,7 @@ class CalenderRecord
   String Contents;
   DateTime Date;
   EventType type;
+  //object document id
+  late String? oid;
 
 }

@@ -29,9 +29,9 @@ class _BeneficiaryGameScreenState extends State<BeneficiaryGameScreen>
 
   var IconsMap = 
   {
-    -1 : Icon(Icons.square_outlined),
-    0 : Icon(Icons.add),
-    1 : Icon(Icons.circle_outlined)
+    -1 : Icon(Icons.square_outlined, color: Colors.grey,),
+    0 : Icon(Icons.add, color: Colors.red,),
+    1 : Icon(Icons.circle_outlined, color: Colors.green,)
   };
 
   void updateBoard(int position)
@@ -101,12 +101,12 @@ class _BeneficiaryGameScreenState extends State<BeneficiaryGameScreen>
   {
     return Scaffold
     (
-      backgroundColor: Colors.blueGrey.shade200,
+      backgroundColor: Colors.black87,
       body: Column
     (
       children: 
       [
-        StyledText(text: ':العب اكس أو', size: 36, color: Colors.black87, fontFamily: 'Amiri'),
+        StyledText(text: ':العب اكس أو', size: 36, color: Colors.white, fontFamily: 'Amiri'),
         SizedBox(height: 32,),
         StyledText(text: '${(_currentTurn)? 'X' : 'O'}  :دَوْر', size: 32, color: Colors.indigo, fontFamily: 'Amiri'),
         Spacer(),
