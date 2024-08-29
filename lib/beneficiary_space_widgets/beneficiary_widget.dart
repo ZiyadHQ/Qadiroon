@@ -8,6 +8,7 @@ import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_game_wi
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_info_widget.dart';
 import 'package:qadiroon_front_end/main.dart';
+import 'package:qadiroon_front_end/service_space_widgets/service_display_widget.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 
@@ -122,6 +123,8 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
             IconButton(onPressed: (){if(_currentWidget != BeneficiaryInfoScreen()){Beneficiary_changeBaseWidget(BeneficiaryInfoScreen());}}, icon: (_currentWidget is BeneficiaryInfoScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen());}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
+            SizedBox(width: 32),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(ServiceBrowserWidget());}}, icon: (_currentWidget is ServiceBrowserWidget)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search)),
           ],
         ),
       ),
