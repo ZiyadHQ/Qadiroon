@@ -8,7 +8,7 @@ import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.
 import 'package:qadiroon_front_end/data_stores/login_record.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/main.dart';
-import 'package:qadiroon_front_end/service_provider_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_widget.dart';
 import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 
 final RegExp passWordRules = RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
@@ -56,7 +56,7 @@ class _RegisterMenu extends State<RegisterMenu>
   }
   void _checkInputRegister() async
   {
-    bool NameCheck = Name == 'Empty';
+    bool NameCheck = (Name == 'Empty');
     bool PassWordCheck = PassWord == 'Empty';
     PassWordCheck |= !passWordRules.hasMatch(PassWord);
     if(NameCheck || PassWordCheck)

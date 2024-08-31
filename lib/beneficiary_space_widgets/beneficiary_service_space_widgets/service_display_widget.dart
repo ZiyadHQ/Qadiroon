@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:qadiroon_front_end/data_stores/calendar_record.dart';
 
 class ServiceBrowserWidget extends StatefulWidget
 {
@@ -12,6 +13,9 @@ class ServiceBrowserWidget extends StatefulWidget
 
 class _service_browsing_widget_state extends State<ServiceBrowserWidget>
 {
+
+  List<CalenderRecord>? records;
+
   @override
   Widget build(BuildContext context)
   {

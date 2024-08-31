@@ -19,11 +19,15 @@ void main() async {
   );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
   print('Started App!');
+
+
   runApp(
     MaterialApp(
       home: baseWidget(initialWidget: StartScreen(), key: baseWidgetKey,)
     )
   );
+
+
 }
 
 class baseWidget extends StatefulWidget

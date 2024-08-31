@@ -6,7 +6,7 @@ import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/login_widget.dart';
 import 'package:qadiroon_front_end/register_widget.dart';
 import 'package:qadiroon_front_end/main.dart';
-import 'package:qadiroon_front_end/service_provider_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_widget.dart';
 
 class StartScreen extends StatelessWidget
 {

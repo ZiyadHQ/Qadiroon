@@ -1,57 +1,42 @@
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_credits_widget.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_game_widget.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_widget.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_info_widget.dart';
 import 'package:qadiroon_front_end/main.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_service_space_widgets/service_display_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_credits_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_home_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_info_widget.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 
 //WARNING!! MUST ONLY BE USED FOR CHILD WIDGETS OF THIS WIDGET !!WARNING
-GlobalKey<_BeneficiaryScreenState> globalBenificiaryStateKey = GlobalKey<_BeneficiaryScreenState>();
-void Beneficiary_changeBaseWidget(Widget newWidget)
+GlobalKey<_serviceProviderScreenState> globalServiceProviderStateKey = GlobalKey<_serviceProviderScreenState>();
+void serviceProvider_changeBaseWidget(Widget newWidget)
 {
-  globalBenificiaryStateKey.currentState?._changeWidget(newWidget);
+  globalServiceProviderStateKey.currentState?._changeWidget(newWidget);
 }
 
-
-class BeneficiaryScreen extends StatefulWidget
+class ServiceProviderScreen extends StatefulWidget
 {
 
-  BeneficiaryScreen({required Key key, required this.user, required this.initialWidget}) : super(key: key);
+  ServiceProviderScreen({super.key, required this.user});
 
-  final Widget initialWidget;
   final UserCredential user;
+  final Widget initialWidget = serviceProviderHomeScreen();
 
   State<StatefulWidget> createState()
   {
-    return _BeneficiaryScreenState();
+    return _serviceProviderScreenState();
   }
 
 }
 
-class _BeneficiaryScreenState extends State<BeneficiaryScreen>
+class _serviceProviderScreenState extends State<ServiceProviderScreen>
 {
 
   late Widget _currentWidget;
+  Map<String, dynamic> userData = {};
 
-  void _changeWidget(Widget newWidget)
-  {
-    setState(
-      ()
-      {
-        _currentWidget = newWidget;
-      }
-    );
-  }
-
-  Map<String, dynamic>? userData;
-  @override
   void initState()
   {
     super.initState();
@@ -61,6 +46,13 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
       setState(() {
         userData = value.data() as Map<String, dynamic>;
       });
+    });
+  }
+
+  void _changeWidget(Widget widget)
+  {
+    setState(() {
+      _currentWidget = widget;
     });
   }
 
@@ -116,15 +108,14 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
               icon: Icon(color: Colors.red.shade900,Icons.logout_sharp),
             ),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryHomeScreen){Beneficiary_changeBaseWidget(BeneficiaryHomeScreen());}}, icon: (_currentWidget is BeneficiaryHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
+            IconButton(onPressed: (){if(true/*_currentWidget != serviceProviderHomeScreen()*/){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (_currentWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen()){Beneficiary_changeBaseWidget(BeneficiaryGameScreen());}}, icon: (_currentWidget is BeneficiaryGameScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != serviceProviderHomeScreen()){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (_currentWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryInfoScreen()){Beneficiary_changeBaseWidget(BeneficiaryInfoScreen());}}, icon: (_currentWidget is BeneficiaryInfoScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
+            IconButton(onPressed: (){if(_currentWidget != serviceProviderInfoScreen()){serviceProvider_changeBaseWidget(serviceProviderInfoScreen());}}, icon: (_currentWidget is serviceProviderInfoScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen());}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
+            IconButton(onPressed: (){if(_currentWidget != serviceProviderCreditsScreen()){serviceProvider_changeBaseWidget(serviceProviderCreditsScreen());}}, icon: (_currentWidget is serviceProviderCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(ServiceBrowserWidget());}}, icon: (_currentWidget is ServiceBrowserWidget)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search)),
           ],
         ),
       ),

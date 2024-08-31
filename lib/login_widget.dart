@@ -9,7 +9,7 @@ import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.
 import 'package:qadiroon_front_end/data_stores/login_record.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/main.dart';
-import 'package:qadiroon_front_end/service_provider_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_widget.dart';
 import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 
 void testFunct()
@@ -74,7 +74,7 @@ class _LoginMenu extends State<LoginMenu>
       Navigator.pop(context);
       simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');
       main_switchBaseWidget(
-        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: userCredential) : BeneficiaryScreen(user: userCredential, initialWidget: BeneficiaryHomeScreen(), key: globalBenificiaryStateKey,)
+        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: userCredential, key: globalServiceProviderStateKey,) : BeneficiaryScreen(user: userCredential, initialWidget: BeneficiaryHomeScreen(), key: globalBenificiaryStateKey,)
       );
 
     }

@@ -26,12 +26,7 @@ Sed finibus feugiat purus vitae egestas. Pellentesque lectus nibh, pellentesque 
 Aliquam dictum urna eget iaculis consectetur. Praesent accumsan sapien sed dui viverra, in congue lacus consequat. Fusce dui lorem, vehicula a leo a, venenatis eleifend sem. Praesent pretium purus et orci aliquet, ut viverra est gravida. Nulla consequat, leo in commodo euismod, risus felis egestas metus, ac facilisis libero metus non justo. Fusce auctor consequat mauris, eu aliquet eros placerat nec. Donec eu tincidunt tortor. Suspendisse condimentum et dui ac faucibus. Vivamus at tincidunt enim. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse nisl nisl, venenatis nec nisi vel, ornare laoreet arcu. In vel nisl quis ex hendrerit tincidunt sed ac lacus. Donec convallis erat enim, id efficitur ante lobortis eleifend.
 
 Nulla sit amet convallis mauris. Pellentesque eu enim orci. Morbi ac lacus mattis, tempor nibh vitae, ullamcorper lorem. Suspendisse potenti. Aenean ac luctus arcu. Donec rhoncus sit amet metus sed varius. Sed dictum libero lectus, eu ornare ligula suscipit eget. Mauris quam sem, pulvinar vel velit ac, tristique vestibulum elit. Duis pretium interdum tellus ac tempor. Duis id eros eu massa scelerisque gravida. Praesent dui lorem, porta a posuere vel, venenatis eu velit. Cras tincidunt sed libero sed euismod. Etiam vel magna eu justo euismod efficitur. ''', size: 24, color: Colors.black87, fontFamily: 'Amiri'),
-        SizedBox(height: 96,),
-        StyledText(text: '''
-المبرمج: زياد الحقباني
-المطور: زياد الحقباني
-المصمم: زياد الحقباني
-المرشد السياحي: عبدالملك السلمان''', size: 24, color: Colors.black87, fontFamily: 'Amiri')
+        SizedBox(height: 96,)
       ],
     ),
     );
