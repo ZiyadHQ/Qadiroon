@@ -8,6 +8,7 @@ import 'package:qadiroon_front_end/service_provider_space_widgets/service_provid
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_info_widget.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
+import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_account.dart';
 
 //WARNING!! MUST ONLY BE USED FOR CHILD WIDGETS OF THIS WIDGET !!WARNING
 GlobalKey<_serviceProviderScreenState> globalServiceProviderStateKey = GlobalKey<_serviceProviderScreenState>();
@@ -108,14 +109,15 @@ class _serviceProviderScreenState extends State<ServiceProviderScreen>
               icon: Icon(color: Colors.red.shade900,Icons.logout_sharp),
             ),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(true/*_currentWidget != serviceProviderHomeScreen()*/){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (_currentWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != serviceProviderHomeScreen()){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (_currentWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != serviceProviderHomeScreen()){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (_currentWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != userPersonalAccountScreen){serviceProvider_changeBaseWidget(userPersonalAccountScreen(userData: userData));}}, icon: (_currentWidget is userPersonalAccountScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != serviceProviderInfoScreen()){serviceProvider_changeBaseWidget(serviceProviderInfoScreen());}}, icon: (_currentWidget is serviceProviderInfoScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != serviceProviderCreditsScreen()){serviceProvider_changeBaseWidget(serviceProviderCreditsScreen());}}, icon: (_currentWidget is serviceProviderCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
+            IconButton(onPressed: (){if(_currentWidget != serviceProviderCreditsScreen()){serviceProvider_changeBaseWidget(serviceProviderCreditsScreen());}}, icon: (_currentWidget is serviceProviderCreditsScreen)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search))
           ],
         ),
       ),

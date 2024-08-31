@@ -19,7 +19,7 @@ class BeneficiaryHomeCalenderObject extends StatelessWidget
       borderRadius: BorderRadius.circular(32),
       child: SizedBox
       (
-        height: 128,
+        height: 256,
         width: 512,
         child: Scaffold
         (
