@@ -1,13 +1,17 @@
 
+import 'dart:io';
+
 import 'package:camera/camera.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+
+
+
 
 class cameraControlScreen extends StatefulWidget
 {
 
-  cameraControlScreen({super.key, required this.cameraToControl, required this.imageRefrence});
-
-  CameraDescription cameraToControl;
+  cameraControlScreen({super.key, required this.imageRefrence});
 
   XFile imageRefrence;
 
@@ -21,14 +25,16 @@ class cameraControlScreen extends StatefulWidget
 class _cameraControlScreenState extends State<cameraControlScreen>
 {
 
+  late CameraDescription cameraToControl;
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
 
   @override
   void initState()
-  {
+  async {
     super.initState();
-    _controller = CameraController(widget.cameraToControl, ResolutionPreset.high);
+    cameraToControl = (await availableCameras()).first;
+    _controller = CameraController(cameraToControl, ResolutionPreset.high);
     _initializeControllerFuture = _controller.initialize();
   }
 

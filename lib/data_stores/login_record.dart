@@ -1,11 +1,8 @@
 
+
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
-import 'package:qadiroon_front_end/register_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qadiroon_front_end/simple_alert_widgets.dart';
-import 'package:qadiroon_front_end/tools/query_tools.dart';
 
 class LoginRecord
 {
@@ -47,10 +44,14 @@ class LoginRecord
     UserCredential userCredential;
     try
     {
-      userCredential = await _auth.signInWithEmailAndPassword(
+      print("attempting to sign in~!!\n");
+      var creds = await _auth.signInWithEmailAndPassword(
         email: '$Name@testmail.com',
         password: passWord
       );
+      print(creds.user?.uid?? "no user!!\n");
+      userCredential = creds;
+
     }
     catch(e)
     {

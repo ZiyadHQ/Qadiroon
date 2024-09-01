@@ -28,7 +28,6 @@ if (flutterVersionName == null) {
 android {
     namespace "com.example.qadiroon_front_end"
     compileSdkVersion flutter.compileSdkVersion
-    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -68,4 +67,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
