@@ -1,7 +1,9 @@
 
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/login_widget.dart';
 import 'package:qadiroon_front_end/register_widget.dart';
@@ -42,7 +44,7 @@ class StartScreen extends StatelessWidget
             ),
             SizedBox(height: 96),
             Text(
-              'أو سجل كـ',
+              'أو تسجيل حساب جديد كـ',
             style: TextStyle(
               fontSize: 32
             )
@@ -60,6 +62,29 @@ class StartScreen extends StatelessWidget
               ),
               'مقدم خدمة'
             )),
+            Spacer(),
+            TextButton(onPressed: () async
+            {
+              late UserCredential creds;
+              try {
+                creds = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "Ahmad@testmail.com", password: "Password!123");
+              } catch (e) {
+                print("error signing in debugUser: $e");
+                return;
+              }
+              main_switchBaseWidget(ServiceProviderScreen(user: creds, key: globalServiceProviderStateKey));
+            }, child: Text("DEBUG LOGIN ServiceProvider")),
+            TextButton(onPressed: () async
+            {
+              late UserCredential creds;
+              try {
+                creds = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "Saleh@testmail.com", password: "Password!123");
+              } catch (e) {
+                print("error signing in debugUser: $e");
+                return;
+              }
+              main_switchBaseWidget(BeneficiaryScreen(user: creds, key: globalBenificiaryStateKey,));
+            }, child: Text("DEBUG LOGIN Ben"))
           ],
         ),
       ),

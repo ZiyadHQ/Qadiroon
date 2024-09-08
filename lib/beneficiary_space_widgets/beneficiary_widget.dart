@@ -23,9 +23,9 @@ void Beneficiary_changeBaseWidget(Widget newWidget)
 class BeneficiaryScreen extends StatefulWidget
 {
 
-  BeneficiaryScreen({required Key key, required this.user, required this.initialWidget}) : super(key: key);
+  BeneficiaryScreen({required Key key, required this.user}) : super(key: key);
 
-  final Widget initialWidget;
+  final Widget initialWidget = BeneficiaryHomeScreen();
   final UserCredential user;
 
   State<StatefulWidget> createState()
