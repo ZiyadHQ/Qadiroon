@@ -6,6 +6,7 @@ import 'package:qadiroon_front_end/main.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_credits_widget.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_home_widget.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_info_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_new_service_widget.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_account.dart';
@@ -117,7 +118,7 @@ class _serviceProviderScreenState extends State<ServiceProviderScreen>
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != serviceProviderCreditsScreen()){serviceProvider_changeBaseWidget(serviceProviderCreditsScreen());}}, icon: (_currentWidget is serviceProviderCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != serviceProviderCreditsScreen()){serviceProvider_changeBaseWidget(serviceProviderCreditsScreen());}}, icon: (_currentWidget is serviceProviderCreditsScreen)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search))
+            IconButton(onPressed: (){if(_currentWidget != ServiceProviderNewServiceScreen()){serviceProvider_changeBaseWidget(ServiceProviderNewServiceScreen());}}, icon: (_currentWidget is ServiceProviderNewServiceScreen)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search))
           ],
         ),
       ),

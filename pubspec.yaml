@@ -17,6 +17,9 @@ dependencies:
   flutter_html: ^2.2.1
   flutter:
     sdk: flutter
+  google_maps_flutter: ^2.9.0
+  flutter_map: ^7.0.2
+  geolocator: ^13.0.1
 
 dev_dependencies:
   flutter_test:
