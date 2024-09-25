@@ -83,11 +83,10 @@ class LoginRecord
         email: '$Name@testmail.com',
         password: passWord
       );
-      print('account ID: ${userCredential.user!.uid}');
       FirebaseFirestore _database = FirebaseFirestore.instance;
-    _database.collection('User').doc(userCredential.user!.uid).set(
-      toMap()
-    );
+      _database.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).set(
+        toMap()
+      );
     } catch (e)
     {
       print('Error: $e');

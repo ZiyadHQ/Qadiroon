@@ -2,7 +2,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/universal_widgets/map_viewer.dart';
@@ -30,17 +30,9 @@ class _NewServiceCompanionScreenState extends State<NewServiceCompanionScreen>
   {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    return Column
+    return MapViewer
     (
-      children: 
-      [
-        SizedBox
-        (
-          width: width * 1.0,
-          height: height * 0.75,
-          child: MapViewer(initialLocation: widget.initialLocation),
-        )
-      ],
+      initialLocation: LatLng(0, 0),
     );
   }
   
