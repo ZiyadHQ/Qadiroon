@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'firebase_options.dart';
+import 'package:location/location.dart';
 
 GlobalKey<_baseWidgetState> baseWidgetKey = GlobalKey<_baseWidgetState>();
 
@@ -18,6 +19,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);
+
   print('Started App!');
 
 

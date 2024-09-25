@@ -61,7 +61,7 @@ class _ServiceProviderNewServiceScreenState extends State<ServiceProviderNewServ
             
             backgroundColor: WidgetStatePropertyAll(Colors.white38)
           ),
-          onPressed: (){showDialog(context: context, builder: (context) => NewServiceCompanionScreen());},
+          onPressed: () async {var location = await getCurrentLocationLatLng(); showDialog(context: context, builder: (context) => NewServiceCompanionScreen(initialLocation: location,));},
           child: Row
           (
             mainAxisAlignment: MainAxisAlignment.center,
@@ -75,7 +75,8 @@ class _ServiceProviderNewServiceScreenState extends State<ServiceProviderNewServ
               SizedBox(width: 16,),
             ],
           ),
-        ), duration: const Duration(seconds: 3), gradient: [Colors.amber, Colors.blue]),
+        ), duration: const Duration(seconds: 3), gradient: [Colors.amber, Colors.blue]
+        ),
         Spacer(),
         TextButton
         (

@@ -1,11 +1,19 @@
 
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/universal_widgets/map_viewer.dart';
 
 class NewServiceCompanionScreen extends StatefulWidget
 {
+
+  NewServiceCompanionScreen({this.initialLocation = const LatLng(0, 0)});
+
+  LatLng initialLocation;
+
   @override
   State<StatefulWidget> createState()
   {
@@ -16,13 +24,24 @@ class NewServiceCompanionScreen extends StatefulWidget
 
 class _NewServiceCompanionScreenState extends State<NewServiceCompanionScreen>
 {
+
   @override
   Widget build(BuildContext context)
   {
-    return 
-    
-       MapViewer()
-    ;
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    return Column
+    (
+      children: 
+      [
+        SizedBox
+        (
+          width: width * 1.0,
+          height: height * 0.75,
+          child: MapViewer(initialLocation: widget.initialLocation),
+        )
+      ],
+    );
   }
   
 }
