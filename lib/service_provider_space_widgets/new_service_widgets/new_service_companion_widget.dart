@@ -4,7 +4,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
-import 'package:qadiroon_front_end/universal_widgets/animated_styled_widgets.dart';
+import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/universal_widgets/map_viewer.dart';
 
 class NewServiceCompanionScreen extends StatefulWidget

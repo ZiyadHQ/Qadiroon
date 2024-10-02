@@ -1,15 +1,15 @@
 
 import 'dart:async';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:qadiroon_front_end/simple_alert_widgets.dart';
+import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
+import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_information.dart';
 
 Future<String?> uploadImage(XFile imageFile) async
 {
@@ -51,25 +51,20 @@ void listFoldersAndFiles(String? Dir) async
 
 }
 
-Future<List<Widget>> getImagesFromDir() async
+Future<List<String>> getImagesFromDir() async
 {
   var ref = FirebaseStorage.instance.ref("${FirebaseAuth.instance.currentUser!.uid}/");
 
   List<String> files = [];
 
   var list = await ref.listAll();
+
   for(var item in list.items)
   {
     files.add(await item.getDownloadURL());
   }
 
-  List<Widget> widgets = [];
-
-  for(var file in files)
-  {
-    widgets.add( Image.network(file));
-  }
-  return widgets;
+  return files;
 }
 
 class userPersonalAccountScreen extends StatefulWidget
@@ -92,12 +87,13 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
   Timer startDaemon()
 {
 
-  var timerRef = Timer.periodic(Durations.extralong4, (timer) async
+  var timerRef = Timer.periodic(Duration(seconds: 2), (timer) async
   {
-    images = await getImagesFromDir();
+    URLs = await getImagesFromDir();
+    images = URLs.map((e) => Image.network(e)).toList();
     if(this.mounted)
     setState(() {
-      
+      downloaded = (URLs.length > 0);
     });
     print("TIMER LAPSED");
   }
@@ -123,48 +119,82 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
   Timer? timer;
   var imageFile;
   List<Widget> images = [];
+  List<String> URLs = [];
+  bool downloaded = false;
 
   Widget build(BuildContext context)
   {
-
-    return ListView
+    print("BUILDING WIDGET: ${widget.userData}");
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return Scaffold
     (
-      scrollDirection: Axis.vertical,
-      children: 
-      [
-        SizedBox
-        (
-          width: 512, height: 64,
-          child: ClipRRect
+      backgroundColor: Colors.black12,
+      body: ListView
+      (
+        scrollDirection: Axis.vertical,
+        children: 
+        [
+          SizedBox(height: height * 0.025,),
+          Center
           (
-            borderRadius: BorderRadius.circular(32),
-            child: Scaffold
-            (
-              body: Row
-              (
-                mainAxisSize: MainAxisSize.min,
-                children: 
-                [
-                  Spacer(),
-                  Text("${widget.userData["Name"]}"),
-                  Spacer(),
-                  Text("${(widget.userData["issueTime"] as Timestamp).toDate()}"),
-                  Spacer()
-                ],
-              ),
-            ),
+            child: (downloaded)? CircleAvatar
+          (
+            maxRadius: 72,
+            backgroundColor: Colors.white12,
+            foregroundImage: NetworkImage(URLs[0]),
+          )
+          .animate()
+          .fadeIn(duration: 2000.ms)
+          .scale(duration: 2000.ms) : CircularProgressIndicator.adaptive(),
           ),
+          SizedBox(height: height * 0.05,),
+          LabeledButton(function: (){showDialog(context: context, builder: (context) => UserPersonalInformationScreen(userData: widget.userData));}, icon: Icons.account_box, text: "البيانات الشخصية"),
+          SizedBox(height: height * 0.10,),
+          LabeledButton(function: (){}, icon: Icons.account_box, text: "البيانات الشخصية"),
+          SizedBox(height: height * 0.10,),
+          LabeledButton(function: (){}, icon: Icons.account_box, text: "البيانات الشخصية"),
+          widget.userData['userType'] == UserType.S.toString()?
+          SizedBox(height: height * 0.10,) : SizedBox(),
+          widget.userData['userType'] == UserType.S.toString()?
+          LabeledButton(function: (){}, icon: Icons.account_box, text: "اضافة خبرات") : SizedBox(),
+        ],
+      ),
+    );
+  }
+  
+}
+
+class LabeledButton extends StatelessWidget
+{
+
+  LabeledButton({required this.function, required this.icon, required this.text});
+
+  final void Function() function;
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context)
+  {
+    return DecoratedBox
+    (
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
+      child: TextButton
+      (
+        onPressed: function,
+        child: Flex
+        (
+          direction: Axis.horizontal,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: 
+          [
+            Icon(icon, size: 36,),
+            StyledText(text: text, size: 24, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.right,),
+          ],
         ),
-        SizedBox(height: 64,),
-        TextButton(onPressed: () async {imageFile = await ImagePicker().pickImage(source: ImageSource.gallery)?? imageFile; print("path: ${imageFile?.path?? "image null"}");}, child: Text("TAKE IMAGE")),
-        SizedBox(height: 64,),
-        TextButton(onPressed: () async {simple_alert_showWidget(context, "رفع الصورة لقاعدة البيانات", isDismissible: false); await uploadImage(imageFile); Navigator.pop(context);}, child: Text("UPLOAD IMAGE")),
-        SizedBox(height: 64,),
-        TextButton(onPressed: (){showModalBottomSheet(context: context, builder: (context) => ListView(children: images));}, child: Text("SHOW IMAGE")),
-        StyledText(text: "${widget.userData!["userType"]}", size: 24, color: Colors.black, fontFamily: "Amiri"),
-        SizedBox(height: 64,),
-        StyledText(text: "${(widget.userData!["issueTime"] as Timestamp).toDate()}", size: 24, color: Colors.black, fontFamily: "Amiri"),
-      ],
+      ),
     );
   }
   

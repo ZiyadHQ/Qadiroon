@@ -1,5 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 
 class GradientAnimatedIcon extends StatefulWidget
 {
@@ -135,6 +138,42 @@ class _GradientAnimatedWrapperState extends State<GradientAnimatedWrapper> with 
           child: widget.child
         );
       },
+    );
+  }
+
+}
+
+class AnimatedLoadingWidget extends StatelessWidget
+{
+
+  AnimatedLoadingWidget({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context)
+  {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return DecoratedBox
+    (
+      decoration: BoxDecoration
+      (
+        borderRadius: BorderRadius.circular(24),
+        color: Colors.white
+      ),
+      child: SizedBox
+      (
+        height: height * 0.1,
+        width: width * 0.25,
+        child : Center
+        (
+          child: StyledText(color: Colors.black, fontFamily: "Amiri", size: 36, text: text)
+          .animate(onPlay: (controller) {controller.repeat();})
+          .fadeIn(duration: 1000.ms)
+          .fadeOut(delay: 1250.ms, duration: 1000.ms)
+        ),
+      ),
     );
   }
 

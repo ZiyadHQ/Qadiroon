@@ -5,7 +5,7 @@ import 'package:qadiroon_front_end/data_stores/calendar_record.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/new_service_widgets/new_service_companion_widget.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/new_service_widgets/new_service_consulting_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
-import 'package:qadiroon_front_end/universal_widgets/animated_styled_widgets.dart';
+import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/universal_widgets/map_viewer.dart';
 
 class ServiceProviderNewServiceScreen extends StatefulWidget
