@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_add_experience_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_information.dart';
 
@@ -53,11 +54,18 @@ void listFoldersAndFiles(String? Dir) async
 
 Future<List<String>> getImagesFromDir() async
 {
-  var ref = FirebaseStorage.instance.ref("${FirebaseAuth.instance.currentUser!.uid}/");
+  var ref = FirebaseStorage.instance.ref("${FirebaseAuth.instance.currentUser!.uid}/public/");
 
   List<String> files = [];
 
-  var list = await ref.listAll();
+  late var list;
+
+  try {
+    list = await ref.listAll();
+  } catch (e) {
+    print("Error listing all files from ${{FirebaseAuth.instance.currentUser!.uid}}: ${e}");
+    return [];
+  }
 
   for(var item in list.items)
   {
@@ -154,10 +162,11 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
           LabeledButton(function: (){}, icon: Icons.account_box, text: "البيانات الشخصية"),
           SizedBox(height: height * 0.10,),
           LabeledButton(function: (){}, icon: Icons.account_box, text: "البيانات الشخصية"),
+          //these widgets only appear if the user type is service provider(UserType.S)
           widget.userData['userType'] == UserType.S.toString()?
           SizedBox(height: height * 0.10,) : SizedBox(),
           widget.userData['userType'] == UserType.S.toString()?
-          LabeledButton(function: (){}, icon: Icons.account_box, text: "اضافة خبرات") : SizedBox(),
+          LabeledButton(function: (){showDialog(context: context, builder: (context) => ServiceProviderAddExperienceScreen());}, icon: Icons.account_box, text: "اضافة خبرات") : SizedBox(),
         ],
       ),
     );
