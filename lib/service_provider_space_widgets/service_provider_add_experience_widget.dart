@@ -2,7 +2,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ServiceProviderAddExperienceScreen extends StatefulWidget
 {
@@ -34,7 +34,8 @@ class _ServiceProviderAddExperienceScreenState extends State<ServiceProviderAddE
             SizedBox(height: height * 0.05,),
             StyledText(text: "أضف خبرة جديدة لحسابك", size: 36, color: Colors.black87, fontFamily: "Amiri"),
             SizedBox(height: height * 0.05,),
-            TextButton(onPressed: () async {await FilePicker.platform.pickFiles();}, child: StyledText(text: "اختر الملف", size: 36, color: Colors.black, fontFamily: "Amiri")),
+            Text("TEST TEXT"),
+            //TextButton(onPressed: () async {await FilePicker.platform.pickFiles();}, child: StyledText(text: "اختر الملف", size: 36, color: Colors.black, fontFamily: "Amiri")),
             Spacer(),
             TextButton(onPressed: (){Navigator.pop(context);}, child: StyledText(text: "عد الى الوراء", size: 36, color: Colors.red, fontFamily: "Amiri")),
           ],

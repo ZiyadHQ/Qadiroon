@@ -113,6 +113,11 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
 
   @override
   void initState() {
+
+    getImagesFromDir().then((value) {
+      URLs = value;
+    },);
+
     super.initState();
 
     timer = startDaemon();
@@ -132,7 +137,6 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
 
   Widget build(BuildContext context)
   {
-    print("BUILDING WIDGET: ${widget.userData}");
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold
@@ -157,16 +161,30 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
           .scale(duration: 2000.ms) : CircularProgressIndicator.adaptive(),
           ),
           SizedBox(height: height * 0.05,),
-          LabeledButton(function: (){showDialog(context: context, builder: (context) => UserPersonalInformationScreen(userData: widget.userData));}, icon: Icons.account_box, text: "البيانات الشخصية"),
-          SizedBox(height: height * 0.10,),
-          LabeledButton(function: (){}, icon: Icons.account_box, text: "البيانات الشخصية"),
-          SizedBox(height: height * 0.10,),
-          LabeledButton(function: (){}, icon: Icons.account_box, text: "البيانات الشخصية"),
+          ExpansionTile
+          (
+            title: Title(color: Colors.white, child: LabeledText(icon: Icons.account_box, text: "البيانات الشخصية"),),
+            children:
+            [
+              UserPersonalInformationScreen(userData: widget.userData, pfpURL: (URLs.length > 0)? URLs[0] : '')
+            ],
+            backgroundColor: Colors.blueGrey,
+            collapsedIconColor: Colors.purple,
+          ),
           //these widgets only appear if the user type is service provider(UserType.S)
           widget.userData['userType'] == UserType.S.toString()?
           SizedBox(height: height * 0.10,) : SizedBox(),
           widget.userData['userType'] == UserType.S.toString()?
-          LabeledButton(function: (){showDialog(context: context, builder: (context) => ServiceProviderAddExperienceScreen());}, icon: Icons.account_box, text: "اضافة خبرات") : SizedBox(),
+          ExpansionTile
+          (
+            title: Title(color: Colors.white, child: LabeledText(icon: Icons.history_edu, text: "الخبرات"),),
+            children:
+            [
+              UserPersonalInformationScreen(userData: widget.userData, pfpURL: (URLs.length > 0)? URLs[0] : '')
+            ],
+            backgroundColor: Colors.blueGrey,
+            collapsedIconColor: Colors.purple,
+          ) : SizedBox()
         ],
       ),
     );
@@ -203,6 +221,38 @@ class LabeledButton extends StatelessWidget
             StyledText(text: text, size: 24, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.right,),
           ],
         ),
+      ),
+    );
+  }
+  
+}
+
+class LabeledText extends StatelessWidget
+{
+
+  LabeledText({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context)
+  {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return DecoratedBox
+    (
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
+      child: Flex
+      (
+        direction: Axis.horizontal,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: 
+        [
+          Icon(icon, size: 36,),
+          StyledText(text: text, size: 24, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.right,),
+        ],
       ),
     );
   }
