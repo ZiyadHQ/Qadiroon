@@ -1,13 +1,14 @@
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_information.dart';
 
 void handleUpload(BuildContext context, String path) async
 {
+  showDialog(context: context, barrierDismissible: false, builder: (context) => CircularProgressIndicator(),);
   var flag = await uploadProfilePicture(File(path));
+  Navigator.pop(context);
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(flag? "نجح" : "فشل")));
   Navigator.pop(context);
 }

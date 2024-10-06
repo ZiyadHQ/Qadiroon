@@ -163,24 +163,24 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
           SizedBox(height: height * 0.05,),
           ExpansionTile
           (
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             title: Title(color: Colors.white, child: LabeledText(icon: Icons.account_box, text: "البيانات الشخصية"),),
+            backgroundColor: Colors.blueGrey,
+            collapsedIconColor: Colors.purple,
             children:
             [
               UserPersonalInformationScreen(userData: widget.userData, pfpURL: (URLs.length > 0)? URLs[0] : '')
             ],
-            backgroundColor: Colors.blueGrey,
-            collapsedIconColor: Colors.purple,
           ),
           //these widgets only appear if the user type is service provider(UserType.S)
           widget.userData['userType'] == UserType.S.toString()?
-          SizedBox(height: height * 0.10,) : SizedBox(),
-          widget.userData['userType'] == UserType.S.toString()?
           ExpansionTile
           (
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
             title: Title(color: Colors.white, child: LabeledText(icon: Icons.history_edu, text: "الخبرات"),),
             children:
             [
-              UserPersonalInformationScreen(userData: widget.userData, pfpURL: (URLs.length > 0)? URLs[0] : '')
+              ServiceProviderAddExperienceScreen()
             ],
             backgroundColor: Colors.blueGrey,
             collapsedIconColor: Colors.purple,
@@ -195,11 +195,12 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
 class LabeledButton extends StatelessWidget
 {
 
-  LabeledButton({required this.function, required this.icon, required this.text});
+  LabeledButton({required this.function, required this.icon, required this.text, this.spacing = 0});
 
   final void Function() function;
   final IconData icon;
   final String text;
+  final double spacing;
 
   @override
   Widget build(BuildContext context)
