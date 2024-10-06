@@ -12,28 +12,6 @@ import 'package:qadiroon_front_end/service_provider_space_widgets/service_provid
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_information.dart';
 
-Future<String?> uploadImage(XFile imageFile) async
-{
-  var uid = FirebaseAuth.instance.currentUser!.uid;
-  try
-  {
-    final fireStorage = FirebaseStorage.instance;
-
-    final storageRef = fireStorage.ref()
-    .child("${uid}/${DateTime.now().millisecondsSinceEpoch}.jpg");
-
-    await storageRef.putFile(File(imageFile.path));
-
-    String downloadURL = await storageRef.getDownloadURL();
-    return downloadURL;
-  } catch (e)
-  {
-    print(e);
-    return null;
-  }
-
-}
-
 void listFoldersAndFiles(String? Dir) async
 {
   var ref = FirebaseStorage.instance.ref(Dir?? "");
@@ -172,6 +150,7 @@ class _userPersonalAccountScreenState extends State<userPersonalAccountScreen>
               UserPersonalInformationScreen(userData: widget.userData, pfpURL: (URLs.length > 0)? URLs[0] : '')
             ],
           ),
+          SizedBox(height: height * 0.025,),
           //these widgets only appear if the user type is service provider(UserType.S)
           widget.userData['userType'] == UserType.S.toString()?
           ExpansionTile

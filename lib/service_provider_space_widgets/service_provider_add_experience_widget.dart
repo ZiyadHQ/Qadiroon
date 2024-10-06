@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
@@ -17,7 +18,7 @@ String dateRangeToString(DateTime start, DateTime end) {
     months += 12;
   }
 
-  return "${years} years${(months > 0) ? " and ${months} months" : ""}";
+  return "${years} y${(months > 0) ? ", ${months} m" : ""}";
 }
 
 class ServiceProviderAddExperienceScreen extends StatefulWidget
@@ -33,7 +34,17 @@ class ServiceProviderAddExperienceScreen extends StatefulWidget
 class _ServiceProviderAddExperienceScreenState extends State<ServiceProviderAddExperienceScreen>
 {
 
-  List<Experience> list = [Experience(description: "TEST TEXT", startDate: DateTime.now(), endDate: DateTime.now())];
+  List<Experience> list = [Experience(description: "TEST TEXT", startDate: DateTime.now(), endDate: DateTime(DateTime.now().year + Random.secure().nextInt(10), DateTime.now().month + Random.secure().nextInt(2)))];
+
+  @override
+  void initState() {
+    for(int i=0; i<10;i++)
+    {
+      list.add(Experience(description: "$i desc", startDate: DateTime.now(), endDate: DateTime(DateTime.now().year + Random.secure().nextInt(10), DateTime.now().month + Random.secure().nextInt(2))));
+    }
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context)
@@ -49,11 +60,14 @@ class _ServiceProviderAddExperienceScreenState extends State<ServiceProviderAddE
           SizedBox(height: height * 0.05,),
           LabeledButton(function: (){}, icon: Icons.add_link, text: "أضف خبرة جديدة لحسابك",),
           SizedBox(height: height * 0.05,),
-          SizedBox
+          Container
           (
+            width: width * 0.95,
             height: height * 0.5,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: Colors.white),
             child: ListView
             (
+              padding: EdgeInsets.all(8),
               children: list.map((e) => ExperienceWidget(experience: e)).toList(),
             ),
           )
@@ -90,8 +104,8 @@ class ExperienceWidget extends StatelessWidget{
       decoration: BoxDecoration
       (
         color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
-        gradient: LinearGradient(colors: [Colors.grey.shade600, Colors.grey.shade300, Colors.white])
+        borderRadius: BorderRadius.circular(64),
+        gradient: LinearGradient(colors: [Colors.grey.shade600, Colors.grey.shade300, Colors.white, Colors.blueGrey.shade600])
       ),
       child: Column
       (
