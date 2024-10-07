@@ -58,7 +58,11 @@ class _ServiceProviderAddExperienceScreenState extends State<ServiceProviderAddE
         children: 
         [
           SizedBox(height: height * 0.05,),
-          LabeledButton(function: (){}, icon: Icons.add_link, text: "أضف خبرة جديدة لحسابك",),
+          LabeledButton(function: ()
+          {
+            showDialog(context: context, builder: (context) => CreateWidgetDialog());
+          }
+          , icon: Icons.add_link, text: "أضف خبرة جديدة لحسابك",),
           SizedBox(height: height * 0.05,),
           Container
           (
@@ -117,6 +121,52 @@ class ExperienceWidget extends StatelessWidget{
           StyledText(text: "الى: ${formatDate(experience.endDate)}", size: 24, color: Colors.black, fontFamily: "Amiri"),
           StyledText(text: "(${dateRangeToString(experience.startDate, experience.endDate)})", size: 24, color: Colors.black, fontFamily: "Amiri")
         ],
+      ),
+    );
+  }
+
+}
+
+class CreateWidgetDialog extends StatefulWidget
+{
+  @override
+  State<StatefulWidget> createState()
+  {
+    return _CreateWidgetDialogState();
+  }
+
+}
+
+class _CreateWidgetDialogState extends State<CreateWidgetDialog>
+{
+
+  Widget extraWidget = const Text("TEST TEXT");
+
+  Widget build(BuildContext context)
+  {
+    return Scaffold
+    (
+      body: ListView
+      (
+        children:
+        [
+          StyledText(text: "وصف الخبرة", size: 36, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.right,),
+          TextField(),
+          TextButton(
+            onPressed: ()
+          async {
+            var firstDate = await showDatePicker(context: context, firstDate: DateTime(1900), lastDate: DateTime.now());
+            if(firstDate != null)
+            {
+              setState(() {
+                extraWidget = TextButton(onPressed: (){showDatePicker(context: context, firstDate: firstDate, lastDate: DateTime.now());}, child: Text("end date"));
+              });
+            }
+          },
+          child: Text("start date")
+          ),
+          extraWidget
+        ]
       ),
     );
   }
