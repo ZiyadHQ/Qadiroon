@@ -1,8 +1,13 @@
 
 import 'dart:io';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_account.dart';
@@ -21,6 +26,20 @@ String dateRangeToString(DateTime start, DateTime end) {
   return "${years} y${(months > 0) ? ", ${months} m" : ""}";
 }
 
+void updateList(List<Experience> listRef)
+{
+  FirebaseFirestore.instance.collection('Experience').where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+  .get()
+  .then((QuerySnapshot snapshot){
+    listRef.clear();
+    snapshot.docs.forEach((doc){
+      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+      Experience temp = Experience(description: data['description'], startDate: (data['startDate'] as Timestamp).toDate(), endDate: (data['endDate'] as Timestamp).toDate());
+      listRef.add(temp);
+      });
+      });
+}
+
 class ServiceProviderAddExperienceScreen extends StatefulWidget
 {
   @override
@@ -37,12 +56,11 @@ class _ServiceProviderAddExperienceScreenState extends State<ServiceProviderAddE
   List<Experience> list = [Experience(description: "TEST TEXT", startDate: DateTime.now(), endDate: DateTime(DateTime.now().year + Random.secure().nextInt(10), DateTime.now().month + Random.secure().nextInt(2)))];
 
   @override
-  void initState() {
-    for(int i=0; i<10;i++)
-    {
-      list.add(Experience(description: "$i desc", startDate: DateTime.now(), endDate: DateTime(DateTime.now().year + Random.secure().nextInt(10), DateTime.now().month + Random.secure().nextInt(2))));
-    }
-    // TODO: implement initState
+  void initState()
+  {
+
+    updateList(list);
+
     super.initState();
   }
 
@@ -60,7 +78,7 @@ class _ServiceProviderAddExperienceScreenState extends State<ServiceProviderAddE
           SizedBox(height: height * 0.05,),
           LabeledButton(function: ()
           {
-            showDialog(context: context, builder: (context) => CreateWidgetDialog());
+            showDialog(context: context, builder: (context) => CreateWidgetDialog(listRef: list,));
           }
           , icon: Icons.add_link, text: "أضف خبرة جديدة لحسابك",),
           SizedBox(height: height * 0.05,),
@@ -129,6 +147,11 @@ class ExperienceWidget extends StatelessWidget{
 
 class CreateWidgetDialog extends StatefulWidget
 {
+
+  CreateWidgetDialog({required this.listRef});
+
+  List<Experience> listRef;
+
   @override
   State<StatefulWidget> createState()
   {
@@ -140,32 +163,98 @@ class CreateWidgetDialog extends StatefulWidget
 class _CreateWidgetDialogState extends State<CreateWidgetDialog>
 {
 
-  Widget extraWidget = const Text("TEST TEXT");
+  Future<bool> _handleNewExperience(BuildContext context, String desc, DateTime start, DateTime end) async
+  {
+
+    if(end.microsecondsSinceEpoch <= start.microsecondsSinceEpoch)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("وقت النهاية لا يمكن ان يكون قبل او مطابق لوقت البداية")));
+      return false;
+    }
+    else if(desc == "")
+    {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("لا يوجد وصف للخبرة")));
+      return false;
+    }
+
+    showDialog(context: context, builder: (context) => CircularProgressIndicator.adaptive(),);
+
+    Map<String, dynamic> doc = 
+    {
+      'userID' : FirebaseAuth.instance.currentUser!.uid,
+      'description' : desc,
+      'startDate' : start,
+      'endDate' : end
+    };
+
+    try
+    {
+      await FirebaseFirestore.instance.collection('Experience').doc().set(doc);
+    } catch (e) {
+      print("ERROR UPLOADING NEW EXPERIENCE: $e");
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل اضافة الخبرة")));
+      return false;
+    }
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تمت اضافة الخبرة بنجاح")));
+    updateList(widget.listRef);
+    return true;
+  }
+
+  Widget extraWidget = SizedBox();
+  Widget secondExtraWidget = SizedBox();
+
+  String desc = "";
+  DateTime? start;
+  DateTime? end; 
 
   Widget build(BuildContext context)
   {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Scaffold
     (
       body: ListView
       (
         children:
         [
-          StyledText(text: "وصف الخبرة", size: 36, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.right,),
-          TextField(),
+          SizedBox(height: height * 0.1,),
+          StyledText(text: "وصف الخبرة", size: 36, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.center,),
+          TextField(onChanged: (value){desc = value;}, style: TextStyle(fontFamily: "Amiri")),
+          SizedBox(height: height * 0.05),
           TextButton(
             onPressed: ()
           async {
-            var firstDate = await showDatePicker(context: context, firstDate: DateTime(1900), lastDate: DateTime.now());
-            if(firstDate != null)
+            start = await showDatePicker(context: context, firstDate: DateTime(1900), lastDate: DateTime.now());
+            if(start != null)
             {
               setState(() {
-                extraWidget = TextButton(onPressed: (){showDatePicker(context: context, firstDate: firstDate, lastDate: DateTime.now());}, child: Text("end date"));
+                extraWidget = TextButton(onPressed: () async {
+                  end = await showDatePicker(context: context, firstDate: start!, lastDate: DateTime.now());
+                  if(end != null)
+                  {secondExtraWidget = TextButton(onPressed: () async {bool success = await _handleNewExperience(context, desc, start!, end!); if(success){Navigator.pop(context);}}, child: StyledText(text: "أضف الخبرة", size: 24, color: Colors.blue, fontFamily: "Amiri"))
+                  .animate().slide(duration: 1000.ms).fadeIn(duration: 1000.ms).scale(duration: 1000.ms);}
+                  setState(() {});
+                },
+                child: Container(child: StyledText(text: "تاريخ النهاية", size: 36, color: Colors.black, fontFamily: "Amiri"), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color:  Colors.blueGrey),)
+                );
               });
             }
           },
-          child: Text("start date")
+          child: Container(child: StyledText(text: "تاريخ البداية", size: 36, color: Colors.black, fontFamily: "Amiri"), decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.blueGrey))
           ),
-          extraWidget
+          extraWidget,
+          SizedBox(height: height * 0.025,),
+          Row
+          (
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:
+            [
+              TextButton(onPressed: (){Navigator.pop(context);}, child: StyledText(text: "عد الى الوراء", size: 24, color: Colors.red, fontFamily:"Amiri")),
+              secondExtraWidget,
+            ],
+          )
         ]
       ),
     );
