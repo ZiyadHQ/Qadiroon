@@ -114,7 +114,7 @@ class _serviceProviderScreenState extends State<ServiceProviderScreen>
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != userPersonalAccountScreen){serviceProvider_changeBaseWidget(userPersonalAccountScreen(userData: userData));}}, icon: (_currentWidget is userPersonalAccountScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != serviceProviderCreditsScreen()){serviceProvider_changeBaseWidget(serviceProviderCreditsScreen());}}, icon: (_currentWidget is serviceProviderCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
+            IconButton(onPressed: (){if(_currentWidget != serviceProviderBrowseScreen){serviceProvider_changeBaseWidget(serviceProviderBrowseScreen());}}, icon: (_currentWidget is serviceProviderBrowseScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != ServiceProviderNewServiceScreen()){serviceProvider_changeBaseWidget(ServiceProviderNewServiceScreen());}}, icon: (_currentWidget is ServiceProviderNewServiceScreen)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search))
           ],

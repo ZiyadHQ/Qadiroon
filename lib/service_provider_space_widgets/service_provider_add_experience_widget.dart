@@ -1,15 +1,11 @@
 
-import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
-import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
+import 'package:qadiroon_front_end/styled%20widgets/styled_page_view.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_account.dart';
 import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_information.dart';
 
@@ -219,6 +215,18 @@ class _CreateWidgetDialogState extends State<CreateWidgetDialog>
       (
         children:
         [
+          SizedBox(
+            height: height * 0.12,
+            child: StyledPageView
+            (
+              children: 
+              [
+                StyledText(text: "اجعل وصف الخبرة قصيراً وموجزاً, حاول ألا تتعدا 50 حرف", size: 24, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.right,),
+                StyledText(text: "مثال: مدير مبيعات في شركة مزارع القصيم", size: 24, color: Colors.black, fontFamily: "Amiri"),
+                StyledText(text: "يجب ان يكون تاريخ البداية قبل تاريخ النهاية", size: 24, color: Colors.black, fontFamily: "Amiri")
+              ],
+            ),
+          ),
           SizedBox(height: height * 0.1,),
           StyledText(text: "وصف الخبرة", size: 36, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.center,),
           TextField(onChanged: (value){desc = value;}, style: TextStyle(fontFamily: "Amiri")),

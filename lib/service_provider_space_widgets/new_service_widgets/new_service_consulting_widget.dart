@@ -1,30 +1,63 @@
 
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_new_service_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_hint.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_page_view.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 
-enum ServiceType
+Future<bool> uploadConsultingService(BuildContext context, String name, String desc, ServiceType type, consultingServiceType subType, bool repeating) async
+{
+
+  showDialog(context: context, builder: (context) => CircularProgressIndicator.adaptive(),);
+
+  Map<String, dynamic> data = 
+  {
+    'userID' : FirebaseAuth.instance.currentUser!.uid,
+    'name' : name,
+    'description' : desc,
+    'serviceType' : type.toString(),
+    'subType' : subType.toString(),
+    'repeating' : repeating.toString()
+  };
+
+  try
+  {
+    await FirebaseFirestore.instance.collection('Service').doc().set(data); 
+  } catch (e)
+  {
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل اضافة الخدمة")));
+    print("ERROR ADDING NEW CONSULTING SERVICE: $e");
+    return false;
+  }
+
+  Navigator.pop(context);
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تمت اضافة الخدمة بنجاح")));
+  return true;
+}
+
+enum consultingServiceType
 {
   Legal,
   Business,
   Technical,
   Health,
-  Family
 }
 
-Map<ServiceType, Color> serviceToColor = 
+Map<consultingServiceType, Color> serviceToColor = 
 {
-  ServiceType.Legal : Colors.blue.shade300,
-  ServiceType.Family : Colors.green.shade300,
-  ServiceType.Health : Colors.red.shade300,
-  ServiceType.Business : Colors.green.shade300,
-  ServiceType.Technical : Colors.orange.shade300
+  consultingServiceType.Legal : Colors.blue.shade300,
+  consultingServiceType.Health : Colors.red.shade300,
+  consultingServiceType.Business : Colors.green.shade300,
+  consultingServiceType.Technical : Colors.orange.shade300
 };
 
 class NewServiceConsultingScreen extends StatefulWidget
@@ -66,11 +99,13 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
     );
   }
 
-  ServiceType activeService = ServiceType.Legal;
+  ServiceType serviceType = ServiceType.Consulting;
+  consultingServiceType activeService = consultingServiceType.Legal;
   bool repeatService = false;
 
   //input controllers
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) 
@@ -129,11 +164,10 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children:
             [
-              ServiceTypeButton(function: (){activeService = ServiceType.Legal; setState((){});}, color: (activeService == ServiceType.Legal)? Colors.blue: Colors.black87, text: "قانوني"),
-              ServiceTypeButton(function: (){activeService = ServiceType.Business; setState((){});}, color: (activeService == ServiceType.Business)? Colors.green: Colors.black87, text: "أعمال"),
-              ServiceTypeButton(function: (){activeService = ServiceType.Technical; setState((){});}, color: (activeService == ServiceType.Technical)? Colors.orange: Colors.black87, text: "تقني"),
-              ServiceTypeButton(function: (){activeService = ServiceType.Health; setState((){});}, color: (activeService == ServiceType.Health)? Colors.red: Colors.black87, text: "صحى"),
-              ServiceTypeButton(function: (){activeService = ServiceType.Family; setState((){});}, color: (activeService == ServiceType.Family)? Colors.green: Colors.black87, text: "عائلي"),
+              ServiceTypeButton(function: (){activeService = consultingServiceType.Legal; setState((){});}, color: (activeService == consultingServiceType.Legal)? Colors.blue: Colors.black87, text: "قانوني"),
+              ServiceTypeButton(function: (){activeService = consultingServiceType.Business; setState((){});}, color: (activeService == consultingServiceType.Business)? Colors.green: Colors.black87, text: "أعمال"),
+              ServiceTypeButton(function: (){activeService = consultingServiceType.Technical; setState((){});}, color: (activeService == consultingServiceType.Technical)? Colors.orange: Colors.black87, text: "تقني"),
+              ServiceTypeButton(function: (){activeService = consultingServiceType.Health; setState((){});}, color: (activeService == consultingServiceType.Health)? Colors.red: Colors.black87, text: "صحى"),
             ],
           ),
           SizedBox(height: height * 0.1,),
@@ -149,7 +183,17 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
           (
             controller: nameController,
           ),
-          TextButton(onPressed: (){showDialog(context: context, builder: (context) => AlertDialog(content: Text(nameController.text),),);}, child: Text("Print text")),
+          SizedBox(height: height * 0.05,),
+          StyledText(text: ":وصف الخدمة", size: 36, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.right,),
+          CupertinoTextField
+          (
+            controller: descriptionController,
+            expands: true,
+            maxLines: null,
+            minLines: null,
+          ),
+          TextButton(onPressed: (){print("name: ${nameController.text}, desc: ${descriptionController.text}, type: ${serviceType}, subtype: ${activeService}, repeating: ${repeatService}");}, child: Text("debug print")),
+          TextButton(onPressed: () async {bool success = await uploadConsultingService(context ,nameController.text, descriptionController.text, serviceType, activeService, repeatService); if(success){Navigator.pop(context);}}, child: Text("upload")),
           TextButton(onPressed: (){Navigator.pop(context);}, child: Text("cancle"))
         ],
       ),

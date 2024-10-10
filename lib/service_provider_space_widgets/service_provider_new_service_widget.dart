@@ -8,6 +8,13 @@ import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/universal_widgets/map_viewer.dart';
 
+enum ServiceType
+{
+  Consulting,
+  Companion,
+  Delivery
+}
+
 class ServiceProviderNewServiceScreen extends StatefulWidget
 {
   @override
