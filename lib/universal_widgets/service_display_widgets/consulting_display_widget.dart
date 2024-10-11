@@ -48,8 +48,8 @@ class ConsultingDetailedWidget extends StatefulWidget
 
   ConsultingDetailedWidget({required this.serviceData, this.userData});
   
-  DocumentSnapshot<Map<String, dynamic>> serviceData;
-  Map<String, dynamic>? userData;
+  final DocumentSnapshot<Map<String, dynamic>> serviceData;
+  final Map<String, dynamic>? userData;
 
   @override
   State<ConsultingDetailedWidget> createState() => _ConsultingDetailedWidgetState();
@@ -65,6 +65,7 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
 
     if(await checkDuplicateRequest())
     {
+      Navigator.pop(context);
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("لقد طلبت هذه الخدمة مسبقاً, انتظر حتى يأتيك رد من مقدم الخدمة")));
       return false;
