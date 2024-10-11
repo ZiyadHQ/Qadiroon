@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_credits_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_game_widget.dart';
@@ -23,10 +24,10 @@ void Beneficiary_changeBaseWidget(Widget newWidget)
 class BeneficiaryScreen extends StatefulWidget
 {
 
-  BeneficiaryScreen({required Key key, required this.user}) : super(key: key);
+  BeneficiaryScreen({required Key key, required this.userData}) : super(key: key);
 
-  final Widget initialWidget = BeneficiaryHomeScreen();
-  final UserCredential user;
+  final Widget initialWidget = BeneficiaryHomeScreen(userData: Map<String, dynamic>(),);
+  final Map<String, dynamic> userData;
 
   State<StatefulWidget> createState()
   {
@@ -57,7 +58,7 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
     super.initState();
     _currentWidget = widget.initialWidget;
     FirebaseFirestore database = FirebaseFirestore.instance;
-    database.collection('User').doc(widget.user.user!.uid).get().then((value){
+    database.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).get().then((value){
       setState(() {
         userData = value.data() as Map<String, dynamic>;
       });
@@ -116,7 +117,7 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
               icon: Icon(color: Colors.red.shade900,Icons.logout_sharp),
             ),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryHomeScreen){Beneficiary_changeBaseWidget(BeneficiaryHomeScreen());}}, icon: (_currentWidget is BeneficiaryHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryHomeScreen){Beneficiary_changeBaseWidget(BeneficiaryHomeScreen(userData: Map<String, dynamic>(),));}}, icon: (_currentWidget is BeneficiaryHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen()){Beneficiary_changeBaseWidget(BeneficiaryGameScreen());}}, icon: (_currentWidget is BeneficiaryGameScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
             SizedBox(width: 32),

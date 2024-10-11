@@ -1,6 +1,7 @@
 
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
@@ -77,13 +78,15 @@ class StartScreen extends StatelessWidget
             TextButton(onPressed: () async
             {
               late UserCredential creds;
+              late DocumentSnapshot<Map<String, dynamic>> userData;
               try {
                 creds = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "Saleh@testmail.com", password: "Password!123");
+                userData = await FirebaseFirestore.instance.collection('User').doc(creds.user!.uid).get();
               } catch (e) {
                 print("error signing in debugUser: $e");
                 return;
               }
-              main_switchBaseWidget(BeneficiaryScreen(user: creds, key: globalBenificiaryStateKey,));
+              main_switchBaseWidget(BeneficiaryScreen(userData: userData.data()!, key: globalBenificiaryStateKey,));
             }, child: Text("DEBUG LOGIN Ben"))
           ],
         ),

@@ -6,11 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_calender_object_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_new_record_widget.dart';
 import 'package:qadiroon_front_end/data_stores/calendar_record.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_add_experience_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_credits_widget.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_new_service_widget.dart';
 import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
+import 'package:qadiroon_front_end/universal_widgets/service_display_widgets/consulting_display_widget.dart';
 
 class BeneficiaryHomeScreen extends StatefulWidget
 {
+
+  BeneficiaryHomeScreen({required this.userData});
+
+  Map<String, dynamic> userData;
 
   State<StatefulWidget> createState()
   {
@@ -22,126 +30,35 @@ class BeneficiaryHomeScreen extends StatefulWidget
 class _BeneficiaryHomeScreenState extends State<BeneficiaryHomeScreen>
 {
 
-  @override
-  void initState()
-  {
-    super.initState();
-    updateList();
-  }
-
-  void updateState()
-  {
-    setState(() {});
-  }
-
-  void addCalenderObject(CalenderRecord cRecord) async
-  {
-    FirebaseFirestore _database = FirebaseFirestore.instance;
-
-    Map<String, dynamic> objectMap =
-    {
-      'uid' : FirebaseAuth.instance.currentUser!.uid,
-      'Name' : cRecord.Name,
-      'Content' : cRecord.Contents,
-      'date' : cRecord.Date,
-      'type' : cRecord.type.toString()
-    };
-    await _database.collection('CalenderRecord').doc().set(objectMap).
-    onError((error, stackTrace) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('اضافة العنصر فشلت!'))));
-    updateList();
-    setState(() {});
-  }
-
-  List<CalenderRecord> Calender = <CalenderRecord>[];
-
-  void deleteCalenderObject(List Calender, CalenderRecord cRecord)
-  {
-    Calender.remove(cRecord);
-    FirebaseFirestore _database = FirebaseFirestore.instance;
-
-    try
-    {
-      _database.collection('CalenderRecord').doc(cRecord.oid).delete().then((value) => print('deleted object'));
-    } catch (e) {
-      print('Error deleting record: $e');
-    }
-
-    setState(() {
-      
-    });
-  }
-
-  CalenderRecord toRecord()
-  {
-    throw UnimplementedError();
-  }
-
-  void updateList() async
-  {
-    Calender = [];
-    simple_rotating_loading_screen(context, backgroundColor: Colors.transparent, isDismissible: false);
-    FirebaseFirestore _database = FirebaseFirestore.instance;
-    QuerySnapshot snapshot = await _database.collection('CalenderRecord').where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get();
-    for(var doc in snapshot.docs)
-    {
-      Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
-      String name = data['Name'];
-      String content = data['Content'];
-      Timestamp date = data['date'];
-      String type = data['type'];
-      String oid = doc.id;
-      CalenderRecord cRecord = CalenderRecord(name, content, date.toDate(), EventType.Education);
-      cRecord.oid = oid;
-      Calender.add(cRecord);
-    }
-    Navigator.pop(context);
-    setState(() {});
-  }
-
-  List<Widget> getListOfWidgets()
-  {
-    List<Widget> listOfWidgets = [];
-
-    Calender.forEach
-    ((element) 
-    {
-      listOfWidgets.add(SizedBox(height: 32,));
-      listOfWidgets.add(BeneficiaryHomeCalenderObject(cRecord: element, Calender: Calender, setState: updateState, removeObject: deleteCalenderObject));
-    });
-    return listOfWidgets;
-  }
+  List<DocumentSnapshot<Map<String, dynamic>>> list = [];
 
   Widget build(BuildContext context)
   {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Scaffold
     (
-      backgroundColor: Colors.blueGrey.shade200,
-      body: Center
-      (
-        child: ListView
+      backgroundColor: Colors.blueGrey,
+      body: ListView
       (
         scrollDirection: Axis.vertical,
-        children: getListOfWidgets(),
+        children:
+        [
+          SizedBox(height: height * 0.05,),
+          TextButton(onPressed: () async {bool success = await downloadServices(context, list); setState(() {}); print("success?? $success");}, child: Text("download services")),
+          StyledText(text: "الخدمات المتوفرة", size: 24, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.center,),
+          Container
+          (
+            height: height * 0.725,
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
+            child: ListView
+            (
+              shrinkWrap: true,
+              children: list.map((e) => ConsultingDisplayWidget(serviceData: e)).toList()
+            ),
+          )
+        ],
       ),
-      ),
-      bottomNavigationBar: Tab
-      (
-        child: Scaffold
-        (
-          backgroundColor: Colors.blueGrey.shade500,
-          body: ListView
-        (
-          scrollDirection: Axis.horizontal,
-          children: 
-          [
-            SizedBox(width: 0,),
-            TextButton(onPressed: (){showDialog(context: context, builder: (context) { return BeneficiaryHomeNewRecordScreen(Calender, addCalenderObject); });}, child: StyledText(text: 'أضف عنصر جديد للجدول', size: 24, color: Colors.blueGrey.shade700, fontFamily: 'Amiri')),
-            SizedBox(width: 64,),
-            TextButton(onPressed: (){updateList();}, child: Text('test button'))
-          ],
-        ),
-        )
-      )
     );
   }
   

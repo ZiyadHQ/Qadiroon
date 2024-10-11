@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/service_display_widgets/consulting_display_widget.dart';
 
-Future<bool> downloadServices(BuildContext context, List<Map<String, dynamic>> listRef)async
+Future<bool> downloadServices(BuildContext context, List<DocumentSnapshot<Map<String, dynamic>>> listRef)async
 {
   listRef.clear();
   showDialog(context: context, builder: (context) => CircularProgressIndicator.adaptive(),);
@@ -15,7 +15,7 @@ Future<bool> downloadServices(BuildContext context, List<Map<String, dynamic>> l
     var querySnapshot = await FirebaseFirestore.instance.collection('Service').get();
     listRef.addAll
     (
-      querySnapshot.docs.map((e) => e.data() as Map<String, dynamic>).toList()
+      querySnapshot.docs
     );
   } catch (e) {
     Navigator.pop(context);
@@ -42,7 +42,7 @@ class serviceProviderBrowseScreen extends StatefulWidget
 class serviceProviderCreditsScreen extends State<serviceProviderBrowseScreen>
 {
 
-  List<Map<String, dynamic>> list = [];
+  List<DocumentSnapshot<Map<String, dynamic>>> list = [];
 
   @override
   Widget build(BuildContext context)

@@ -74,7 +74,7 @@ class _LoginMenu extends State<LoginMenu>
       Navigator.pop(context);
       simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');
       main_switchBaseWidget(
-        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: userCredential, key: globalServiceProviderStateKey,) : BeneficiaryScreen(user: userCredential, key: globalBenificiaryStateKey,)
+        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: userCredential, key: globalServiceProviderStateKey,) : BeneficiaryScreen(userData: userData, key: globalBenificiaryStateKey,)
       );
 
     }
