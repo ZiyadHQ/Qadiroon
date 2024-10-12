@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
@@ -11,10 +12,52 @@ import 'package:qadiroon_front_end/register_widget.dart';
 import 'package:qadiroon_front_end/main.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_widget.dart';
 
-class StartScreen extends StatelessWidget
+class StartScreen extends StatefulWidget
 {
 
   StartScreen({super.key});
+
+  @override
+  State<StartScreen> createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen>
+{
+
+  bool testFlag = true;
+
+  @override
+  void initState()
+  {
+    if(FirebaseAuth.instance.currentUser != null)
+    {
+      Future.delayed(Duration(seconds: 0)).then
+      (
+        (value)
+        {
+      FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).get()
+      .then
+      (
+        (value)
+        async {
+          var Token = await FirebaseMessaging.instance.getToken();
+          await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update({'FCMToken' : Token.toString()});
+          if(value.data()!['userType'] == UserType.B.toString())
+          {
+            main_switchBaseWidget(BeneficiaryScreen(key: globalBenificiaryStateKey, userData: value.data()!));
+            setState(() {});
+          }else
+          {
+            testFlag = false;
+            setState(() {});
+          }
+        },
+      );  
+        }, 
+      );
+    }
+    super.initState();
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,16 +125,18 @@ class StartScreen extends StatelessWidget
               try {
                 creds = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "Saleh@testmail.com", password: "Password!123");
                 userData = await FirebaseFirestore.instance.collection('User').doc(creds.user!.uid).get();
+                var Token = await FirebaseMessaging.instance.getToken();
+                await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update({'FCMToken' : Token.toString()});
               } catch (e) {
                 print("error signing in debugUser: $e");
                 return;
               }
               main_switchBaseWidget(BeneficiaryScreen(userData: userData.data()!, key: globalBenificiaryStateKey,));
-            }, child: Text("DEBUG LOGIN Ben"))
+            }, child: Text("DEBUG LOGIN Ben")),
+            (testFlag)? Text("flag true") : Text("flag false")
           ],
         ),
       ),
     );
   }
-
 }

@@ -2,10 +2,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/new_service_widgets/new_service_consulting_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_hint.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+Future<void> sendNotification(String fcmToken) async
+{
+  FirebaseMessaging.onBackgroundMessage((message) async {
+    
+  },);
+}
 
 class ConsultingDisplayWidget extends StatelessWidget
 {
@@ -86,10 +96,20 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
     } catch (e)
     {
       Navigator.of(context);
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("حدثت مشكلة عند رفع طلبك")));
       return false;  
     }
 
+    final headers = 
+    {
+      'Content-Type' : 'application/json',
+      'Authorization' : 'key='
+    };
+
     Navigator.pop(context);
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم رفع الطلب بنجاح, قيد انتظار الرد من مقدم الخدمة")));
     return true;
   }
 
@@ -98,7 +118,9 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
     late var check;
     try
     {
-      check = await FirebaseFirestore.instance.collection('ServiceRequest').where('serviceID', isEqualTo: widget.serviceData.id).limit(1).get();
+      print("starting check for duplicate ServiceRequests");
+      check = await FirebaseFirestore.instance.collection('ServiceRequest').where('serviceID', isEqualTo: widget.serviceData.id).where('beneficiaryID', isEqualTo: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+      print("ended check for duplicate ServiceRequests");
     } catch (e)
     {
       print("Error checking duplicate: $e");

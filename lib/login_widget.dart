@@ -3,6 +3,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_widget.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
@@ -70,6 +71,9 @@ class _LoginMenu extends State<LoginMenu>
       DocumentSnapshot docSnapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
       Map<String, dynamic> userData =  docSnapshot.data() as Map<String, dynamic>;
       String user_name = userData['Name'];
+
+      var Token = await FirebaseMessaging.instance.getToken();
+      await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update({'FCMToken' : Token.toString()});
 
       Navigator.pop(context);
       simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');

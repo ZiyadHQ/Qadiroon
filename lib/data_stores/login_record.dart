@@ -27,9 +27,8 @@ class LoginRecord
   {
     return {
       'Name': Name,
-      'PassWordHash': passWord,
       'issueTime': issueTime,
-      'userType': userType.toString()
+      'userType': userType.toString(),
     };
   }
 
@@ -83,10 +82,17 @@ class LoginRecord
         email: '$Name@testmail.com',
         password: passWord
       );
-      FirebaseFirestore _database = FirebaseFirestore.instance;
-      _database.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).set(
+
+      Map<String, dynamic> privateData = 
+      {
+        'FCMToken' : '0'
+      };
+
+      FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).set(
         toMap()
       );
+      await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).set(privateData);
+
     } catch (e)
     {
       print('Error: $e');
