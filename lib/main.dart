@@ -32,11 +32,15 @@ void main() async {
 
   print("User Granted Permission: ${setting.authorizationStatus}, with FCM token: ${await FirebaseMessaging.instance.getToken()}");
 
-  FirebaseMessaging.onBackgroundMessage((message) async {
-    print("notif from: ${message.from}");
-    print("notif Time: ${message.sentTime.toString()}");
-    print("recieved notification message: ${message.data}");    
-  },);
+  FirebaseMessaging.onBackgroundMessage((message) async {},);
+  FirebaseMessaging.instance.onTokenRefresh.listen
+  ((newToken) async
+  {
+    try
+    {
+      await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update({'FCMToken' : newToken});
+    } catch (e) {}
+  });
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom]);
