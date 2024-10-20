@@ -116,13 +116,32 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
     
     return Container
     (
-      decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(8)),
       child: Column
       (
         children: 
         [
-          Text("TEST TEXT"),
-          Text("TEST TEXT")
+          StyledText(text: "بيانات طالب الخدمة", size: 24, color: Colors.black, fontFamily: "Amiri"),
+          Row
+          (
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: 
+            [
+              Spacer(),
+              TextButton
+              (
+                onPressed: (){},
+                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "ارفض الطلب", size: 24, color: Colors.red, fontFamily: "Amiri")),
+              ),
+              Spacer(),
+              TextButton
+              (
+                onPressed: (){},
+                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "اقبل الطلب", size: 24, color: Colors.blue, fontFamily: "Amiri")),
+              ),
+              Spacer()
+            ],
+          )
         ],
       ),
     );

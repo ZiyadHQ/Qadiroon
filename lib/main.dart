@@ -71,6 +71,7 @@ class _baseWidgetState extends State<baseWidget> {
   @override
   void initState() {
     super.initState();
+
     _currentWidget = widget.initialWidget;
   }
 
