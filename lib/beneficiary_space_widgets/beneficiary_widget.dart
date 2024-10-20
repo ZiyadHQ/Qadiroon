@@ -12,6 +12,7 @@ import 'package:qadiroon_front_end/main.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_service_space_widgets/service_display_widget.dart';
 import 'package:qadiroon_front_end/start_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
+import 'package:qadiroon_front_end/universal_widgets/personal_account_widget/user_personal_account.dart';
 
 //WARNING!! MUST ONLY BE USED FOR CHILD WIDGETS OF THIS WIDGET !!WARNING
 GlobalKey<_BeneficiaryScreenState> globalBenificiaryStateKey = GlobalKey<_BeneficiaryScreenState>();
@@ -119,13 +120,13 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != BeneficiaryHomeScreen){Beneficiary_changeBaseWidget(BeneficiaryHomeScreen(userData: Map<String, dynamic>(),));}}, icon: (_currentWidget is BeneficiaryHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen()){Beneficiary_changeBaseWidget(BeneficiaryGameScreen());}}, icon: (_currentWidget is BeneficiaryGameScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryGameScreen){Beneficiary_changeBaseWidget(BeneficiaryGameScreen());}}, icon: (_currentWidget is BeneficiaryGameScreen)? Icon(color: Colors.white,Icons.gamepad_outlined) : Icon(Icons.gamepad_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryInfoScreen()){Beneficiary_changeBaseWidget(BeneficiaryInfoScreen());}}, icon: (_currentWidget is BeneficiaryInfoScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
+            IconButton(onPressed: (){if(_currentWidget != userPersonalAccountScreen){Beneficiary_changeBaseWidget(userPersonalAccountScreen(userData: widget.userData));}}, icon: (_currentWidget is userPersonalAccountScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen());}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen());}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen()){Beneficiary_changeBaseWidget(ServiceBrowserWidget());}}, icon: (_currentWidget is ServiceBrowserWidget)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen){Beneficiary_changeBaseWidget(ServiceBrowserWidget());}}, icon: (_currentWidget is ServiceBrowserWidget)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search)),
           ],
         ),
       ),
