@@ -4,12 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/request_display_widgets/consulting_request_display_widget.dart';
+import 'package:qadiroon_front_end/universal_widgets/service_display_widgets/consulting_display_widget.dart';
 
 class serviceProviderHomeScreen extends StatefulWidget
 {
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
+  State<StatefulWidget> createState() 
+  {
     return _serviceProviderHomeScreenState();
   }
 
@@ -26,21 +27,17 @@ class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
       return [];
     }
 
-    var benList = listOfLists[0];
-    var ServiceList = listOfLists[1];
-    var SPList = listOfLists[2];
+    List<ConsultingRequestDisplayWidget> list = [];
 
-    List<ConsultingRequestDisplayWidget> ListOfWidgets = [];
-
-    for(int i=0; i<benList.length; i++)
+    for(requestDisplayWidgetRecord request in listOfLists)
     {
-      ListOfWidgets.add(ConsultingRequestDisplayWidget(benData: benList[i], serviceData: ServiceList[i], serviceProviderData: SPList[i]));
+      list.add(ConsultingRequestDisplayWidget(data: request));
     }
 
-    return ListOfWidgets;
+    return list;
   }
 
-  List<List<DocumentSnapshot<Map<String, dynamic>>>> listOfLists = [];
+  List<requestDisplayWidgetRecord> listOfLists = [];
 
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;

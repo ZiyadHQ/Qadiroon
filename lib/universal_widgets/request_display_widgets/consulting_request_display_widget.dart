@@ -51,7 +51,9 @@ Future<List<requestDisplayWidgetRecord>> downloadBenDataFromFireStore(String ID)
 
 Future<List<requestDisplayWidgetRecord>> downloadServiceProviderDataFromFireStore(String ID) async
 {
-  
+
+  List<requestDisplayWidgetRecord> list = [];
+
   var docs = await FirebaseFirestore.instance.collection('ServiceRequest').where('serviceProviderID', isEqualTo: ID).get();
   for(DocumentSnapshot<Map<String, dynamic>> doc in docs.docs)
   {
@@ -63,10 +65,20 @@ Future<List<requestDisplayWidgetRecord>> downloadServiceProviderDataFromFireStor
     var tempService = await FirebaseFirestore.instance.collection('Service').doc(ServiceID).get();
     var tempBen = await FirebaseFirestore.instance.collection('User').doc(benID).get();
 
+    list.add
+    (
+      requestDisplayWidgetRecord
+      (
+        requestData: doc,
+        benData: tempBen,
+        serviceData: tempService,
+        serviceProviderData: tempSP
+      )
+    );
 
   }
 
-  return listOfLists;
+  return list;
 }
 
 class ConsultingRequestDisplayWidget extends StatelessWidget
@@ -166,11 +178,20 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
                   showDialog(context: context, builder: (context) => CircularProgressIndicator());
                   try
                   {
-
+                    await FirebaseFirestore.instance.collection('ServiceRequest').doc(data.requestData.id).delete();
                   } catch (e) {
-                    
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ERROR: $e")));
+                    return;
                   }
+                  sendTestRequest(data.benData.id, "تم رفض طلبك لخدمة ما",
+"""
+الخدمة: ${data.serviceData.data()!['name']}
+مقدم الخدمة: ${data.serviceProviderData.data()!['Name']}
+"""
+                  );
                   Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("removed successfully")));
                 },
                 child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "اقبل الطلب", size: 24, color: Colors.blue, fontFamily: "Tajawal")),
               ),
