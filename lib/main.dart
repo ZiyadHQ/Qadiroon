@@ -46,8 +46,10 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.bottom]);
 
-  runApp(MaterialApp(
-      home: baseWidget(
+  runApp(MaterialApp
+  (
+    debugShowCheckedModeBanner: true,
+    home: baseWidget(
     initialWidget: StartScreen(),
     key: baseWidgetKey,
   )));

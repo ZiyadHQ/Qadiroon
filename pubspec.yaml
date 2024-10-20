@@ -39,3 +39,6 @@ flutter:
     - family: Amiri
       fonts:
         - asset: assets/fonts/Amiri/Amiri-Regular.ttf
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal/Tajawal-Regular.ttf
