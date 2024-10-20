@@ -31,7 +31,11 @@ Future<bool> downloadServices(BuildContext context, List<DocumentSnapshot<Map<St
 
 class serviceProviderBrowseScreen extends StatefulWidget
 {
-  @override
+
+  serviceProviderBrowseScreen({required this.userData});
+
+  DocumentSnapshot<Map<String, dynamic>> userData;
+
   State<StatefulWidget> createState()
   {
     return serviceProviderCreditsScreen();
@@ -66,7 +70,7 @@ class serviceProviderCreditsScreen extends State<serviceProviderBrowseScreen>
               height: height * 0.6,
               child: ListView
               (
-                children: list.map((e) => ConsultingDisplayWidget(serviceData: e)).toList(),
+                children: list.map((e) => ConsultingDisplayWidget(serviceData: e, userData: widget.userData.data()!,)).toList(),
               ),
             )
           ],

@@ -1,4 +1,5 @@
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,19 +11,45 @@ import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Future<void> sendNotification(String fcmToken) async
-{
-  FirebaseMessaging.onBackgroundMessage((message) async {
-    
-  },);
+import 'package:qadiroon_front_end/tools/jsify.dart';
+
+import 'package:http/http.dart' as http;
+
+Future<void> sendTestRequest(String userID, String title, String textBody) async {
+  try {
+    // Define the URI
+    Uri uri = Uri.parse('http://161.35.68.157/notify');
+
+    // Define the body exactly as expected by the server
+    String body = jsonEncode({
+      "targetUserID": userID,
+      "messageTitle": title,
+      "messageBody" : textBody
+    });
+
+    // Send the POST request
+    var response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,  // JSON-encoded body string
+    );
+
+    // Print the response status and body for debugging
+    print("Status Code: ${response.statusCode}");
+    print("Response Body: ${response.body}");
+  } catch (e) {
+    print("Error occurred: $e");
+  }
 }
 
 class ConsultingDisplayWidget extends StatelessWidget
 {
 
-  ConsultingDisplayWidget({required this.serviceData, this.userData});
+  ConsultingDisplayWidget({required this.serviceData, required this.userData});
   DocumentSnapshot<Map<String, dynamic>> serviceData;
-  Map<String, dynamic>? userData;
+  Map<String, dynamic> userData;
 
   @override
   Widget build(BuildContext context)
@@ -81,9 +108,12 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
       return false;
     }
 
+    print(widget.serviceData.data()!);
+    String serviceProviderID = widget.serviceData.data()!['userID'];
+
     Map<String, dynamic> data = 
     {
-      'serviceProviderID' : widget.serviceData.data()!['userData'],
+      'serviceProviderID' : serviceProviderID,
       'beneficiaryID' : FirebaseAuth.instance.currentUser!.uid,
       'serviceID' : widget.serviceData.id,
       'date' : DateTime.now(),
@@ -101,14 +131,18 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
       return false;  
     }
 
-    final headers = 
-    {
-      'Content-Type' : 'application/json',
-      'Authorization' : 'key='
-    };
-
+    //Navigator.pop(context);
     Navigator.pop(context);
-    Navigator.pop(context);
+    print("${widget.userData?? "user is null"}");
+    print("${widget.serviceData.data()!['name']}");
+    String thisUserName = (await FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).get()).data()!['Name'];
+    String messageBody = 
+    """
+${thisUserName} :المستفيد
+${widget.serviceData.data()!['name']} :الخدمة
+${DateTime.now().toString()} :الوقت
+    """;
+    await sendTestRequest(data['serviceProviderID'].toString(), "طلب مستفيد خدمتك", messageBody);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم رفع الطلب بنجاح, قيد انتظار الرد من مقدم الخدمة")));
     return true;
   }
@@ -119,7 +153,11 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
     try
     {
       print("starting check for duplicate ServiceRequests");
-      check = await FirebaseFirestore.instance.collection('ServiceRequest').where('serviceID', isEqualTo: widget.serviceData.id).where('beneficiaryID', isEqualTo: FirebaseAuth.instance.currentUser!.uid).limit(1).get();
+      check = await FirebaseFirestore.instance.collection('ServiceRequest')
+      .where('serviceID', isEqualTo: widget.serviceData.id)
+      .where('beneficiaryID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .limit(1)
+      .get(const GetOptions(source: Source.server));
       print("ended check for duplicate ServiceRequests");
     } catch (e)
     {
@@ -127,7 +165,7 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
       return true;
     }
 
-    return (check.size != 0);
+    return (check.size > 0);
   }
 
   Widget build(BuildContext context)
@@ -166,7 +204,7 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
               Spacer(),
               TextButton(onPressed: (){}, child: Text("بلغ الخدمة")),
               Spacer(),
-              TextButton(onPressed: (){orderService();}, child: Text("اطلب الخدمة")),
+              TextButton(onPressed: () async {print(await orderService());}, child: Text("اطلب الخدمة")),
               Spacer()
             ],
           )

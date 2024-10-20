@@ -54,7 +54,7 @@ class _BeneficiaryHomeScreenState extends State<BeneficiaryHomeScreen>
             child: ListView
             (
               shrinkWrap: true,
-              children: list.map((e) => ConsultingDisplayWidget(serviceData: e)).toList()
+              children: list.map((e) => ConsultingDisplayWidget(serviceData: e, userData: widget.userData,)).toList()
             ),
           )
         ],

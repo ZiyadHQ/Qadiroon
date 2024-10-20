@@ -68,7 +68,7 @@ class _LoginMenu extends State<LoginMenu>
     if(loginCheck)
     {
       FirebaseFirestore _database = FirebaseFirestore.instance;
-      DocumentSnapshot docSnapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
+      DocumentSnapshot<Map<String, dynamic>> docSnapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
       Map<String, dynamic> userData =  docSnapshot.data() as Map<String, dynamic>;
       String user_name = userData['Name'];
 
@@ -78,7 +78,7 @@ class _LoginMenu extends State<LoginMenu>
       Navigator.pop(context);
       simple_alert_showWidget(context, '$user_name تم تسجيل الدخول بنجاح, أهلا');
       main_switchBaseWidget(
-        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: userCredential, key: globalServiceProviderStateKey,) : BeneficiaryScreen(userData: userData, key: globalBenificiaryStateKey,)
+        (userData['userType'] == 'UserType.S')? ServiceProviderScreen(user: docSnapshot, key: globalServiceProviderStateKey,) : BeneficiaryScreen(userData: userData, key: globalBenificiaryStateKey,)
       );
 
     }

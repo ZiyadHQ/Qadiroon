@@ -13,14 +13,14 @@ import 'package:qadiroon_front_end/styled%20widgets/styled_page_view.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 
-Future<bool> uploadConsultingService(BuildContext context, String name, String desc, ServiceType type, consultingServiceType subType, bool repeating) async
+Future<bool> uploadConsultingService(BuildContext context,String userID, String name, String desc, ServiceType type, consultingServiceType subType, bool repeating) async
 {
 
   showDialog(context: context, builder: (context) => CircularProgressIndicator.adaptive(),);
 
   Map<String, dynamic> data = 
   {
-    'userID' : FirebaseAuth.instance.currentUser!.uid,
+    'userID' : userID,
     'name' : name,
     'description' : desc,
     'serviceType' : type.toString(),
@@ -193,7 +193,7 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
             minLines: null,
           ),
           TextButton(onPressed: (){print("name: ${nameController.text}, desc: ${descriptionController.text}, type: ${serviceType}, subtype: ${activeService}, repeating: ${repeatService}");}, child: Text("debug print")),
-          TextButton(onPressed: () async {bool success = await uploadConsultingService(context ,nameController.text, descriptionController.text, serviceType, activeService, repeatService); if(success){Navigator.pop(context);}}, child: Text("upload")),
+          TextButton(onPressed: () async {bool success = await uploadConsultingService(context, FirebaseAuth.instance.currentUser!.uid, nameController.text, descriptionController.text, serviceType, activeService, repeatService); if(success){Navigator.pop(context);}}, child: Text("upload")),
           TextButton(onPressed: (){Navigator.pop(context);}, child: Text("cancle"))
         ],
       ),
@@ -201,7 +201,7 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
           )
     );
   }
-  
+
 }
 
 class ServiceTypeButton extends StatelessWidget

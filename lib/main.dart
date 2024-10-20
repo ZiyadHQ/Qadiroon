@@ -19,6 +19,7 @@ void main_switchBaseWidget(Widget newWidget) {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -28,11 +29,11 @@ void main() async {
     alert: true,
     badge: true,
     sound: true
-  );
+  ); 
 
   print("User Granted Permission: ${setting.authorizationStatus}, with FCM token: ${await FirebaseMessaging.instance.getToken()}");
 
-  FirebaseMessaging.onBackgroundMessage((message) async {},);
+  // FirebaseMessaging.onBackgroundMessage((message) async {print(message);},);
   FirebaseMessaging.instance.onTokenRefresh.listen
   ((newToken) async
   {

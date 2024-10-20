@@ -26,7 +26,6 @@ class _StartScreenState extends State<StartScreen>
 
   bool testFlag = true;
 
-  @override
   void initState()
   {
     if(FirebaseAuth.instance.currentUser != null)
@@ -35,7 +34,8 @@ class _StartScreenState extends State<StartScreen>
       (
         (value)
         {
-      FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).get()
+      FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid)
+      .get()
       .then
       (
         (value)
@@ -48,6 +48,7 @@ class _StartScreenState extends State<StartScreen>
             setState(() {});
           }else
           {
+            main_switchBaseWidget(ServiceProviderScreen(user: value, key: globalServiceProviderStateKey,));
             testFlag = false;
             setState(() {});
           }
@@ -111,12 +112,13 @@ class _StartScreenState extends State<StartScreen>
             {
               late UserCredential creds;
               try {
-                creds = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "Ahmad@testmail.com", password: "Password!123");
+                FirebaseAuth.instance.signInWithEmailAndPassword(email: "Ahmad@testmail.com", password: "Password!123");
               } catch (e) {
                 print("error signing in debugUser: $e");
                 return;
               }
-              main_switchBaseWidget(ServiceProviderScreen(user: creds, key: globalServiceProviderStateKey));
+              DocumentSnapshot<Map<String, dynamic>> data = await FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).get();
+              main_switchBaseWidget(ServiceProviderScreen(user: data, key: globalServiceProviderStateKey));
             }, child: Text("DEBUG LOGIN ServiceProvider")),
             TextButton(onPressed: () async
             {

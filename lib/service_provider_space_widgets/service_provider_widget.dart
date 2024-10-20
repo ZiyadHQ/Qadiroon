@@ -23,8 +23,8 @@ class ServiceProviderScreen extends StatefulWidget
 
   ServiceProviderScreen({super.key, required this.user});
 
-  final UserCredential user;
-  final Widget initialWidget = serviceProviderHomeScreen();
+  final DocumentSnapshot<Map<String, dynamic>> user;
+  Widget initialWidget = serviceProviderHomeScreen();
 
   State<StatefulWidget> createState()
   {
@@ -36,25 +36,13 @@ class ServiceProviderScreen extends StatefulWidget
 class _serviceProviderScreenState extends State<ServiceProviderScreen>
 {
 
-  late Widget _currentWidget;
-  Map<String, dynamic> userData = {};
+  // Widget _currentWidget = widget.initialWidget;
 
-  void initState()
-  {
-    super.initState();
-    _currentWidget = widget.initialWidget;
-    FirebaseFirestore database = FirebaseFirestore.instance;
-    database.collection('User').doc(widget.user.user!.uid).get().then((value){
-      setState(() {
-        userData = value.data() as Map<String, dynamic>;
-      });
-    });
-  }
-
-  void _changeWidget(Widget widget)
+  void _changeWidget(Widget newWidget)
   {
     setState(() {
-      _currentWidget = widget;
+      // _currentWidget = widget;
+      widget.initialWidget = newWidget;
     });
   }
 
@@ -67,15 +55,15 @@ class _serviceProviderScreenState extends State<ServiceProviderScreen>
         scrollDirection:  Axis.horizontal,
         children: [
           SizedBox(width: 32,),
-          StyledText(text: userData?['Name']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri'),
+          StyledText(text: widget.user?['Name']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri'),
           SizedBox(width: 72,),
-          StyledText(text: userData?['userType']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri'),
+          StyledText(text: widget.user?['userType']?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri'),
           SizedBox(width: 72,),
           StyledText(text: FirebaseAuth.instance.currentUser?.uid?? 'Default', size: 36, color: Colors.blueGrey, fontFamily: 'Amiri')
         ],
       )),
       body: Center(
-        child: _currentWidget,
+        child: widget.initialWidget,
       ),
       bottomNavigationBar: Tab(
         child: ListView(
@@ -110,13 +98,13 @@ class _serviceProviderScreenState extends State<ServiceProviderScreen>
               icon: Icon(color: Colors.red.shade900,Icons.logout_sharp),
             ),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != serviceProviderHomeScreen()){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (_currentWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
+            IconButton(onPressed: (){if(widget.initialWidget != serviceProviderHomeScreen()){serviceProvider_changeBaseWidget(serviceProviderHomeScreen());}}, icon: (widget.initialWidget is serviceProviderHomeScreen)? Icon(color: Colors.white,Icons.home_outlined) : Icon(Icons.home_outlined)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != userPersonalAccountScreen){serviceProvider_changeBaseWidget(userPersonalAccountScreen(userData: userData));}}, icon: (_currentWidget is userPersonalAccountScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
+            IconButton(onPressed: (){if(widget.initialWidget != userPersonalAccountScreen){serviceProvider_changeBaseWidget(userPersonalAccountScreen(userData: widget.user.data()!));}}, icon: (widget.initialWidget is userPersonalAccountScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != serviceProviderBrowseScreen){serviceProvider_changeBaseWidget(serviceProviderBrowseScreen());}}, icon: (_currentWidget is serviceProviderBrowseScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
+            IconButton(onPressed: (){if(widget.initialWidget != serviceProviderBrowseScreen){serviceProvider_changeBaseWidget(serviceProviderBrowseScreen(userData: widget.user,));}}, icon: (widget.initialWidget is serviceProviderBrowseScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != ServiceProviderNewServiceScreen()){serviceProvider_changeBaseWidget(ServiceProviderNewServiceScreen());}}, icon: (_currentWidget is ServiceProviderNewServiceScreen)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search))
+            IconButton(onPressed: (){if(widget.initialWidget != ServiceProviderNewServiceScreen()){serviceProvider_changeBaseWidget(ServiceProviderNewServiceScreen());}}, icon: (widget.initialWidget is ServiceProviderNewServiceScreen)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search))
           ],
         ),
       ),
