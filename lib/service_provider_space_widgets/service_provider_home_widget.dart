@@ -31,7 +31,7 @@ class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
 
     for(requestDisplayWidgetRecord request in listOfLists)
     {
-      list.add(ConsultingRequestDisplayWidget(data: request));
+      list.add(ConsultingRequestDisplayWidget(data: request, parentListRefrence: listOfLists,));
     }
 
     return list;
