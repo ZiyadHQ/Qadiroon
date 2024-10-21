@@ -84,8 +84,9 @@ Future<List<requestDisplayWidgetRecord>> downloadServiceProviderDataFromFireStor
 class ConsultingRequestDisplayWidget extends StatelessWidget
 {
 
-  ConsultingRequestDisplayWidget({required this.data});
+  ConsultingRequestDisplayWidget({required this.data, required this.parentListRefrence});
 
+  List parentListRefrence;
   final requestDisplayWidgetRecord data;
 
   Future<String> _getImageURL() async
@@ -134,7 +135,7 @@ class ConsultingRequestDisplayWidget extends StatelessWidget
       ),
       children: 
       [
-        detailedConsultingRequestDisplayWidget(data: data)
+        detailedConsultingRequestDisplayWidget(data: data, parentListRefrence: parentListRefrence,)
       ],
     );
   }
@@ -144,8 +145,9 @@ class ConsultingRequestDisplayWidget extends StatelessWidget
 class detailedConsultingRequestDisplayWidget extends StatelessWidget
 {
 
-  detailedConsultingRequestDisplayWidget({required this.data});
+  detailedConsultingRequestDisplayWidget({required this.data, required this.parentListRefrence});
 
+  List parentListRefrence;
   final requestDisplayWidgetRecord data;
 
   Widget build(BuildContext context)
@@ -167,12 +169,6 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
               Spacer(),
               TextButton
               (
-                onPressed: (){},
-                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "ارفض الطلب", size: 24, color: Colors.red, fontFamily: "Tajawal")),
-              ),
-              Spacer(),
-              TextButton
-              (
                 onPressed: () async 
                 {
                   showDialog(context: context, builder: (context) => CircularProgressIndicator());
@@ -190,9 +186,16 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
 مقدم الخدمة: ${data.serviceProviderData.data()!['Name']}
 """
                   );
+                  parentListRefrence.remove(this);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("removed successfully")));
                 },
+                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "ارفض الطلب", size: 24, color: Colors.red, fontFamily: "Tajawal")),
+              ),
+              Spacer(),
+              TextButton
+              (
+                onPressed: (){},
                 child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "اقبل الطلب", size: 24, color: Colors.blue, fontFamily: "Tajawal")),
               ),
               Spacer()
