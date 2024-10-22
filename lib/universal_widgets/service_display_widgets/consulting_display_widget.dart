@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/new_service_widgets/new_service_consulting_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_hint.dart';
@@ -44,6 +45,7 @@ Future<void> sendTestRequest(String userID, String title, String textBody) async
   }
 }
 
+
 class ConsultingDisplayWidget extends StatelessWidget
 {
 
@@ -51,29 +53,62 @@ class ConsultingDisplayWidget extends StatelessWidget
   DocumentSnapshot<Map<String, dynamic>> serviceData;
   Map<String, dynamic> userData;
 
-  @override
+  Future<String> _getImageURL() async
+  {
+    return await FirebaseStorage.instance
+    .ref("${serviceData.data()!['userID']}/public/pfp.jpg")
+    .getDownloadURL();
+  }
+
+  Future<String> getSPName() async
+  {
+    DocumentSnapshot<Map<String, dynamic>> doc = await FirebaseFirestore.instance.collection('User').doc(serviceData.data()!['userID']).get();
+    return doc.data()!['Name'];
+  }
+
+  String pfpURL = "";
+
   Widget build(BuildContext context)
   {
-    var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    return TextButton
+    var width = MediaQuery.of(context).size.width;
+    return ExpansionTile
     (
-      onPressed: (){showDialog(context: context, builder: (context) => ConsultingDetailedWidget(serviceData: serviceData, userData: userData,));},
-      child: Container
+      showTrailingIcon: false,
+      title: Container
       (
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: Colors.lightBlue),
-        height: height * 0.15,
+        decoration: BoxDecoration(color: Colors.blueGrey, borderRadius: BorderRadius.circular(8)),
+        padding: EdgeInsets.all(6),
         child: Column
         (
-          children:
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: 
           [
-            StyledText(text: serviceData['name'], size: 24, color: Colors.black, fontFamily: "Amiri"),
-            StyledText(text: serviceData['serviceType'], size: 24, color: Colors.black, fontFamily: "Amiri"),
-            StyledText(text: serviceData['subType'], size: 24, color: Colors.black, fontFamily: "Amiri"),
+            StyledText(text: serviceData.data()!['name'], size: 28, color: Colors.black, fontFamily: "Tajawal", alignment: TextAlign.center,),
+            Container
+            (
+              decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(8)),
+              padding: EdgeInsets.all(10),
+              child: Row
+              (
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: 
+                [
+                  FutureBuilder(future: getSPName(), builder: (context, snapshot) {
+                    return StyledText(text: snapshot.data?? "NULL", size: 24, color: Colors.black, fontFamily: "Tajawal", alignment: TextAlign.center,);
+                  },),
+                  SizedBox(width: width * 0.05,),
+                  FutureBuilder(future: _getImageURL(), builder: (context, snapshot) => CircleAvatar(backgroundImage: NetworkImage(snapshot.data?? "https://upload.wikimedia.org/wikipedia/commons/2/2c/Default_pfp.svg")))
+                ],
+              ),
+            )
           ],
-        ),
+        )
       ),
+      children: 
+      [
+        ConsultingDetailedWidget(serviceData: serviceData,)
+      ],
     );
   }
 
@@ -102,7 +137,6 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
     if(await checkDuplicateRequest())
     {
       Navigator.pop(context);
-      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("لقد طلبت هذه الخدمة مسبقاً, انتظر حتى يأتيك رد من مقدم الخدمة")));
       return false;
     }
@@ -124,14 +158,10 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
       await FirebaseFirestore.instance.collection('ServiceRequest').doc().set(data);
     } catch (e)
     {
-      Navigator.of(context);
-      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("حدثت مشكلة عند رفع طلبك")));
       return false;  
     }
 
-    //Navigator.pop(context);
-    Navigator.pop(context);
     print("${widget.userData?? "user is null"}");
     print("${widget.serviceData.data()!['name']}");
     String thisUserName = (await FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).get()).data()!['Name'];
@@ -183,11 +213,11 @@ ${DateTime.now().toString()} :الوقت
            height: height * 0.5,
             child: Container
             (
-              decoration: BoxDecoration(color: Colors.amber, borderRadius: BorderRadius.circular(16)),
+              decoration: BoxDecoration(color: Colors.blueGrey.shade300, borderRadius: BorderRadius.circular(16)),
               child: ListView
               (
                 scrollDirection: Axis.vertical,
-                children: [StyledText(text: widget.serviceData.data()!['description'], size: 14, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.right,)],
+                children: [StyledText(text: widget.serviceData.data()!['description'], size: 14, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.center,)],
               ),
             ),
           ),

@@ -9,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_widget.dart';
+import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 
 class StartScreen extends StatefulWidget {
   StartScreen({super.key});
@@ -54,6 +55,8 @@ class _StartScreenState extends State<StartScreen> {
     }
     super.initState();
   }
+
+  String imageURL = "https://cdn.discordapp.com/attachments/1185616288626790421/1297642156785143808/ktrrrr-8.png?ex=6718a52f&is=671753af&hm=44421ad21192fe7a4b10475e7356a321bbdd15a49ce76ce38da6f535e41de910&";
 
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -129,54 +132,24 @@ class _StartScreenState extends State<StartScreen> {
                         color: const Color.fromARGB(255, 0, 0, 0)),
                     'مقدم خدمة')),
             Spacer(),
-            TextButton(
-                onPressed: () async {
-                  late UserCredential creds;
-                  try {
-                    FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: "Ahmad@testmail.com", password: "Password!123");
-                  } catch (e) {
-                    print("error signing in debugUser: $e");
-                    return;
-                  }
-                  DocumentSnapshot<Map<String, dynamic>> data =
-                      await FirebaseFirestore.instance
-                          .collection('User')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .get();
-                  main_switchBaseWidget(ServiceProviderScreen(
-                      user: data, key: globalServiceProviderStateKey));
-                },
-                child: Text("DEBUG LOGIN ServiceProvider")),
-            TextButton(
-                onPressed: () async {
-                  late UserCredential creds;
-                  late DocumentSnapshot<Map<String, dynamic>> userData;
-                  try {
-                    creds = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: "Saleh@testmail.com",
-                            password: "Password!123");
-                    userData = await FirebaseFirestore.instance
-                        .collection('User')
-                        .doc(creds.user!.uid)
-                        .get();
-                    var Token = await FirebaseMessaging.instance.getToken();
-                    await FirebaseFirestore.instance
-                        .collection('UserPrivate')
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .update({'FCMToken': Token.toString()});
-                  } catch (e) {
-                    print("error signing in debugUser: $e");
-                    return;
-                  }
-                  main_switchBaseWidget(BeneficiaryScreen(
-                    userData: userData.data()!,
-                    key: globalBenificiaryStateKey,
-                  ));
-                },
-                child: Text("DEBUG LOGIN Ben")),
-            (testFlag) ? Text("flag true") : Text("flag false")
+            GradientAnimatedWrapper
+            (
+              duration: Duration(seconds: 5),
+              gradient: [Colors.blue, Colors.blue.shade900],
+              child: Container
+              (
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration
+                (
+                  backgroundBlendMode: BlendMode.dstOut,
+                  color: Colors.white.withAlpha(192),
+                  borderRadius: BorderRadius.circular(24),
+                  image: DecorationImage(image: NetworkImage(imageURL))
+                ),
+                child: SizedBox(height: height * 0.15, width: width * 0.9,)
+              ),
+            ),
+            SizedBox(height: height * 0.025,)
           ],
         ),
       ),

@@ -1,17 +1,31 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_calender_object_widget.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_new_record_widget.dart';
-import 'package:qadiroon_front_end/data_stores/calendar_record.dart';
-import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_add_experience_widget.dart';
-import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_credits_widget.dart';
-import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_new_service_widget.dart';
-import 'package:qadiroon_front_end/simple_alert_widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/service_display_widgets/consulting_display_widget.dart';
+
+Future<bool> downloadServicesBen(List<DocumentSnapshot<Map<String, dynamic>>> listRef)async
+{
+  listRef.clear();
+
+  try
+  {
+    var querySnapshot = await FirebaseFirestore.instance
+    .collection('Service')
+    .where('visible', isEqualTo: true)
+    .get();
+    listRef.addAll
+    (
+      querySnapshot.docs
+    );
+  } catch (e) {
+    print("ERROR DOWNLOADING SERVICES FROM FIRESTORE: $e"); 
+    return false;
+  }
+
+  return true;
+}
 
 class BeneficiaryHomeScreen extends StatefulWidget
 {
@@ -32,6 +46,19 @@ class _BeneficiaryHomeScreenState extends State<BeneficiaryHomeScreen>
 
   List<DocumentSnapshot<Map<String, dynamic>>> list = [];
 
+  void initState()
+  {
+    downloadServicesBen(list).then
+    (
+      (value)
+      {
+          setState(() {});
+          print("TEST TEST INITSTATE FOR BEN WIDGETS");
+      },
+    );
+    super.initState();
+  }
+
   Widget build(BuildContext context)
   {
     var height = MediaQuery.of(context).size.height;
@@ -39,22 +66,33 @@ class _BeneficiaryHomeScreenState extends State<BeneficiaryHomeScreen>
     return Scaffold
     (
       backgroundColor: Colors.blueGrey,
-      body: ListView
+      body: Column
       (
-        scrollDirection: Axis.vertical,
         children:
         [
           SizedBox(height: height * 0.05,),
-          TextButton(onPressed: () async {bool success = await downloadServicesBen(context, list); setState(() {}); print("success?? $success");}, child: Text("download services")),
           StyledText(text: "الخدمات المتوفرة", size: 24, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.center,),
           Container
           (
             height: height * 0.725,
             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
-            child: ListView
+            child: RefreshIndicator
             (
-              shrinkWrap: true,
-              children: list.map((e) => ConsultingDisplayWidget(serviceData: e, userData: widget.userData,)).toList()
+              onRefresh: () async
+        {
+          bool success = await downloadServicesBen(list);
+          setState(() {});
+          print("success?? $success");
+        },
+              child: ListView
+              (
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                children: list.map((e) => ConsultingDisplayWidget(serviceData: e, userData: widget.userData,)
+                .animate()
+                .fade(curve: SawTooth(1), duration: 2000.ms)
+                ).toList()
+              ),
             ),
           )
         ],

@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_add_experience_widget.dart';
 import 'package:qadiroon_front_end/styled%20widgets/animated_styled_widgets.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/request_display_widgets/consulting_request_display_widget.dart';
@@ -20,7 +22,7 @@ class serviceProviderHomeScreen extends StatefulWidget
 class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
 {
 
-  List<ConsultingRequestDisplayWidget> mapListOfListsToWidgets()
+  List<Widget> mapListOfListsToWidgets()
   {
 
     if(listOfLists.isEmpty)
@@ -28,11 +30,16 @@ class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
       return [];
     }
 
-    List<ConsultingRequestDisplayWidget> list = [];
+    List<Widget> list = [];
 
     for(requestDisplayWidgetRecord request in listOfLists)
     {
-      list.add(ConsultingRequestDisplayWidget(data: request, deleteElementFromList: deleteElementFromList,));
+      list.add
+      (
+        ConsultingRequestDisplayWidget(data: request, deleteElementFromList: deleteElementFromList,)
+        .animate()
+        .fade(curve: SawTooth(1), duration: 2000.ms)
+      );
     }
 
     return list;
@@ -91,8 +98,8 @@ class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
             (
               scrollDirection: Axis.vertical,
               children: (initialized)?
-                (listOfLists.isEmpty)? [Card(color: Colors.blueGrey, child: Text("no requests"),)] : mapListOfListsToWidgets()
-                : [GradientAnimatedWrapper(child: Card(color: Colors.white38, child: Text("Loading", style: TextStyle(fontSize: 36), textAlign: TextAlign.center,),), duration: Duration(seconds: 3), gradient: [Colors.white, Colors.grey])],
+                (listOfLists.isEmpty)? [Card(color: Colors.white38, child: Text("لم يطلب اي مستخدم اي من خدماتك, حاول لاحقاً", style: TextStyle(fontSize: 36), textAlign: TextAlign.center,),)] : mapListOfListsToWidgets()
+                : [GradientAnimatedWrapper(child: Card(color: Colors.white38, child: Text("تحميل الطلبات", style: TextStyle(fontSize: 36), textAlign: TextAlign.center,),), duration: Duration(seconds: 3), gradient: [Colors.white, Colors.grey])],
             ),
           ),
         ),

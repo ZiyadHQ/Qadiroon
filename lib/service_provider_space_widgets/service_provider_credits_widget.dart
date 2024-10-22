@@ -34,33 +34,6 @@ Future<bool> downloadServices(BuildContext context, List<DocumentSnapshot<Map<St
   return true;
 }
 
-Future<bool> downloadServicesBen(BuildContext context, List<DocumentSnapshot<Map<String, dynamic>>> listRef)async
-{
-  listRef.clear();
-  showDialog(context: context, builder: (context) => CircularProgressIndicator.adaptive(),);
-
-  try
-  {
-    var querySnapshot = await FirebaseFirestore.instance
-    .collection('Service')
-    .where('visible', isEqualTo: true)
-    .get();
-    listRef.addAll
-    (
-      querySnapshot.docs
-    );
-  } catch (e) {
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل التحميل")));
-    print("ERROR DOWNLOADING SERVICES FROM FIRESTORE: $e"); 
-    return false;
-  }
-
-  Navigator.pop(context);
-  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("نجح التحميل")));
-  return true;
-}
-
 class serviceProviderBrowseScreen extends StatefulWidget
 {
 
