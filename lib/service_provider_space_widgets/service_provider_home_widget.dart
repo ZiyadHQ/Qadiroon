@@ -31,13 +31,19 @@ class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
 
     for(requestDisplayWidgetRecord request in listOfLists)
     {
-      list.add(ConsultingRequestDisplayWidget(data: request, parentListRefrence: listOfLists,));
+      list.add(ConsultingRequestDisplayWidget(data: request, deleteElementFromList: deleteElementFromList,));
     }
 
     return list;
   }
 
   List<requestDisplayWidgetRecord> listOfLists = [];
+
+  void deleteElementFromList(requestDisplayWidgetRecord element)
+  {
+    listOfLists.remove(element);
+    setState(() {});
+  }
 
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;

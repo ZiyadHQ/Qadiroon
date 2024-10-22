@@ -7,7 +7,6 @@ import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:qadiroon_front_end/simple_alert_widgets.dart';
 import 'package:qadiroon_front_end/data_stores/login_record.dart';
 import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_widget.dart';
-import 'package:qadiroon_front_end/beneficiary_space_widgets/beneficiary_home_widget.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_widget.dart';
 
 void testFunct() {}
@@ -49,7 +48,9 @@ class _LoginMenu extends State<LoginMenu> {
     //simple_alert_showWidget(context, 'محاولة تسجيل الدخول, يرجى الانتظار', isDismissible: false);
     simple_rotating_loading_screen(context,
         message: 'محاولة تسجيل الدخول, يرجى الانتظار',
-        backgroundColor: Colors.amber);
+        backgroundColor: Colors.amber,
+        isDismissible: false
+        );
 
     UserCredential? userCredential = await record.checkLogInAttempt();
 
@@ -65,12 +66,6 @@ class _LoginMenu extends State<LoginMenu> {
       Map<String, dynamic> userData =
           docSnapshot.data() as Map<String, dynamic>;
       String user_name = userData['Name'];
-
-      var Token = await FirebaseMessaging.instance.getToken();
-      await FirebaseFirestore.instance
-          .collection('UserPrivate')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update({'FCMToken': Token.toString()});
 
       Navigator.pop(context);
       simple_alert_showWidget(
@@ -105,23 +100,24 @@ class _LoginMenu extends State<LoginMenu> {
           children: [
             Spacer(),
             Text(
+              textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontSize: 64,
                     fontWeight: FontWeight.w600,
                     color: Colors.white),
                 'تسجيل الدخول'),
+                SizedBox(height: height * 0.05,),
             TextField(
               onChanged: _saveName,
               maxLength: 50,
               style: TextStyle(
-                color: Colors.white, // Change the text being typed to white
+                color: Colors.black, // Change the text being typed to black
                 fontSize:
                     16, // Optionally change the font size of the typed text
               ),
               decoration: InputDecoration(
                 filled: true, // Enable the background color
-                fillColor: const Color.fromARGB(
-                    255, 255, 255, 255), // Set the background color to yellow
+                fillColor: Colors.white, // Set the background color to yellow
                 //contentPadding:
                 //EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
                 border: OutlineInputBorder(
@@ -149,14 +145,16 @@ class _LoginMenu extends State<LoginMenu> {
                 ),
               ),
             ),
+
             SizedBox(
               height: 48,
             ),
             TextField(
-              onChanged: _saveName,
+              obscureText: true,
+              onChanged: _savePassWord,
               maxLength: 50,
               style: TextStyle(
-                color: Colors.white, // Change the text being typed to white
+                color: Colors.black, // Change the text being typed to black
                 fontSize:
                     16, // Optionally change the font size of the typed text
               ),
@@ -231,14 +229,14 @@ class _LoginMenu extends State<LoginMenu> {
                         height * 0.035), // Set minimum size for all buttons
                     maximumSize: Size(width * 0.35,
                         height * 0.035), // Set maximum size for all buttons
-                    backgroundColor: const Color.fromARGB(255, 255, 255, 255)),
+                    backgroundColor: Colors.red),
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 child: Text(
                     style: TextStyle(
                         fontSize: 16,
-                        color: const Color.fromARGB(255, 0, 0, 0)),
+                        color: Colors.white),
                     'عد الى الوراء')),
           ],
         )),

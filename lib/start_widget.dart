@@ -64,11 +64,12 @@ class _StartScreenState extends State<StartScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(height: height * 0.035,),
             Text(
                 style: TextStyle(
                   fontSize: 64,
                   fontWeight: FontWeight.w300,
-                  fontFamily: 'Tajawal',
+                  fontFamily: 'Amiri',
                   color: Colors.white,
                 ),
                 'قادرون'),

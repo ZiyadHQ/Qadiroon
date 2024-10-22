@@ -39,7 +39,7 @@ void main() async {
   {
     try
     {
-      await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update({'FCMToken' : newToken});
+      await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update({'FCMToken' : FieldValue.arrayUnion([newToken])});
     } catch (e) {}
   });
 

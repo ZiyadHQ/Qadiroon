@@ -1,6 +1,8 @@
 
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/data_stores/record.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -32,11 +34,6 @@ class LoginRecord
     };
   }
 
-  void sendRecord() async
-  {
-    throw UnimplementedError();
-  }
-
   Future<UserCredential?> checkLogInAttempt() async
   {
     final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -50,7 +47,6 @@ class LoginRecord
       );
       print(creds.user?.uid?? "no user!!\n");
       userCredential = creds;
-
     }
     catch(e)
     {
@@ -63,6 +59,16 @@ class LoginRecord
       FirebaseFirestore _database = FirebaseFirestore.instance;
       DocumentSnapshot _snapshot = await _database.collection('User').doc(userCredential.user!.uid).get();
       print(  _snapshot.data() as Map<String, dynamic>?);
+      var doc = await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).get();
+      String? FCMToken = await FirebaseMessaging.instance.getToken();
+      await FirebaseFirestore.instance.collection('UserPrivate')
+      .doc(FirebaseAuth.instance.currentUser!.uid)
+      .update
+      (
+        {
+          'FCMTokens' : FieldValue.arrayUnion([FCMToken])
+        }
+      );
     } catch (e)
     {
       print('Error retrieving user data : $e');
@@ -83,9 +89,14 @@ class LoginRecord
         password: passWord
       );
 
+      List<String> tokens = 
+      [
+
+      ];
+
       Map<String, dynamic> privateData = 
       {
-        'FCMToken' : '0'
+        'FCMTokens' : tokens
       };
 
       FirebaseFirestore.instance.collection('User').doc(FirebaseAuth.instance.currentUser!.uid).set(

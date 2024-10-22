@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/main.dart';
 import 'package:qadiroon_front_end/service_provider_space_widgets/service_provider_credits_widget.dart';
@@ -85,7 +86,32 @@ class _serviceProviderScreenState extends State<ServiceProviderScreen>
                               child: StyledText(text: 'لا', size: 24, color: Colors.grey, fontFamily: 'Amiri'),
                         ),
                         TextButton(
-                              onPressed: (){FirebaseAuth.instance.signOut(); Navigator.pop(context); main_switchBaseWidget(StartScreen());},
+                              onPressed: ()
+                              async {
+                                showDialog(context: context, builder: (context) => CircularProgressIndicator());
+
+                                try
+                                {
+                                  String? FCMToken = await FirebaseMessaging.instance.getToken();
+                                  await FirebaseFirestore.instance.collection('UserPrivate').doc(FirebaseAuth.instance.currentUser!.uid).update
+                                  (
+                                    {
+                                      'FCMTokens' : FieldValue.arrayRemove([FCMToken!])
+                                    }
+                                  );
+                                  await FirebaseAuth.instance.signOut(); 
+                                } catch (e)
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("حصلت مشكلة عند تسجيل الخروج, تأكد من شبكتك وحاول مجدداً")));
+                                  Navigator.pop(context);
+                                  print("ERROR LOGING OUT: $e");
+                                  return;
+                                }
+
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                main_switchBaseWidget(StartScreen());
+                              },
                               child: StyledText(text: 'نعم', size: 24, color: Colors.grey, fontFamily: 'Amiri'),
                         ),
                         StyledText(text: 'تسجيل الخروج؟', size: 36, color: Colors.black87, fontFamily: 'Amiri'),

@@ -84,9 +84,9 @@ Future<List<requestDisplayWidgetRecord>> downloadServiceProviderDataFromFireStor
 class ConsultingRequestDisplayWidget extends StatelessWidget
 {
 
-  ConsultingRequestDisplayWidget({required this.data, required this.parentListRefrence});
+  ConsultingRequestDisplayWidget({required this.data, required this.deleteElementFromList});
 
-  List parentListRefrence;
+  void Function(requestDisplayWidgetRecord) deleteElementFromList;
   final requestDisplayWidgetRecord data;
 
   Future<String> _getImageURL() async
@@ -135,7 +135,7 @@ class ConsultingRequestDisplayWidget extends StatelessWidget
       ),
       children: 
       [
-        detailedConsultingRequestDisplayWidget(data: data, parentListRefrence: parentListRefrence,)
+        detailedConsultingRequestDisplayWidget(parentData: data, data: data, deleteElementFromList: deleteElementFromList,)
       ],
     );
   }
@@ -145,10 +145,11 @@ class ConsultingRequestDisplayWidget extends StatelessWidget
 class detailedConsultingRequestDisplayWidget extends StatelessWidget
 {
 
-  detailedConsultingRequestDisplayWidget({required this.data, required this.parentListRefrence});
+  detailedConsultingRequestDisplayWidget({required this.parentData, required this.data, required this.deleteElementFromList});
 
-  List parentListRefrence;
+  void Function(requestDisplayWidgetRecord)  deleteElementFromList;
   final requestDisplayWidgetRecord data;
+  requestDisplayWidgetRecord parentData;
 
   Widget build(BuildContext context)
   {
@@ -186,7 +187,7 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
 مقدم الخدمة: ${data.serviceProviderData.data()!['Name']}
 """
                   );
-                  parentListRefrence.remove(this);
+                  deleteElementFromList(parentData);
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("removed successfully")));
                 },
