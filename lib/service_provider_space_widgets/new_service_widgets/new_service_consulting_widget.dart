@@ -25,7 +25,8 @@ Future<bool> uploadConsultingService(BuildContext context,String userID, String 
     'description' : desc,
     'serviceType' : type.toString(),
     'subType' : subType.toString(),
-    'repeating' : repeating.toString()
+    'repeating' : repeating.toString(),
+    'visible' : true
   };
 
   try
@@ -110,6 +111,7 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
   @override
   Widget build(BuildContext context) 
   {
+    DateTime.now().millisecondsSinceEpoch;
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return ClipRRect
@@ -131,9 +133,9 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
             (
               children: 
               [
-                StyledText(text: "خدمات الإستشارة هي الخدمات المعنية بتقديم الاستشارة في مجال معين للجهة المستفيدة من قبل مفدمين خدمة خبراء في مجالهم", size: 20, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.center),
-                StyledText(text: "اعط خدمتك اسماً قصيراً ومعبر, لا تعط وصفاً مفصلاً في خانة الاسم, استعمل خانة الوصف للتفصيل, الاسم اول ما يعرض للمستفيدين عند تصفحهم للخدمات", size: 20, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.center),
-                StyledText(text: "عند كتابة الوصف, ارفق طرق ثانوية للتواصل مع المستفيد", size: 20, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.center)
+                StyledText(text: "خدمات الإستشارة هي الخدمات المعنية بتقديم الاستشارة في مجال معين للجهة المستفيدة من قبل مفدمين خدمة خبراء في مجالهم", size: 18, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.center),
+                StyledText(text: "اعط خدمتك اسماً قصيراً ومعبر, لا تعط وصفاً مفصلاً في خانة الاسم, استعمل خانة الوصف للتفصيل, الاسم اول ما يعرض للمستفيدين عند تصفحهم للخدمات, يجب الا يتعدى 30 حرف", size: 18, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.center),
+                StyledText(text: "عند كتابة الوصف, ارفق طرق ثانوية للتواصل مع المستفيد", size: 18, color: Colors.black87, fontFamily: "Amiri", alignment: TextAlign.center)
               ],
             ),
           ),
@@ -181,6 +183,7 @@ class _NewServiceConsultingScreenState extends State<NewServiceConsultingScreen>
           ),
           CupertinoTextField
           (
+            maxLength: 30,
             controller: nameController,
           ),
           SizedBox(height: height * 0.05,),

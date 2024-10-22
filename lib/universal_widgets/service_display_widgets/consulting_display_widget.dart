@@ -61,6 +61,7 @@ class ConsultingDisplayWidget extends StatelessWidget
       onPressed: (){showDialog(context: context, builder: (context) => ConsultingDetailedWidget(serviceData: serviceData, userData: userData,));},
       child: Container
       (
+        padding: EdgeInsets.all(8),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(32), color: Colors.lightBlue),
         height: height * 0.15,
         child: Column
@@ -68,10 +69,8 @@ class ConsultingDisplayWidget extends StatelessWidget
           children:
           [
             StyledText(text: serviceData['name'], size: 24, color: Colors.black, fontFamily: "Amiri"),
-            //StyledText(text: serviceData['description'], size: 8, color: Colors.black, fontFamily: "Amiri"),
             StyledText(text: serviceData['serviceType'], size: 24, color: Colors.black, fontFamily: "Amiri"),
             StyledText(text: serviceData['subType'], size: 24, color: Colors.black, fontFamily: "Amiri"),
-            //Icon(Icons.repeat, color: (serviceData['repeating'] == 'true')? Colors.blue : Colors.red) 
           ],
         ),
       ),
@@ -122,7 +121,7 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
 
     try
     {
-      await FirebaseFirestore.instance.collection('ServiceRequest').doc(widget.serviceData.id).set(data);
+      await FirebaseFirestore.instance.collection('ServiceRequest').doc().set(data);
     } catch (e)
     {
       Navigator.of(context);

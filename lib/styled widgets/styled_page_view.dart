@@ -61,20 +61,17 @@ class _StyledPageViewState extends State<StyledPageView>
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     return PageView
-    (
+    ( 
       controller: controller,
       padEnds: true,
       children: widget.children.map
       (
         (e)
         {
-          return DecoratedBox
+          return Card
           (
-            decoration: BoxDecoration
-            (
-              color: Colors.black26,
-              borderRadius: BorderRadius.circular(24),
-            ),
+            elevation: 8,
+            shadowColor: Colors.blueGrey,
             child: e,
           );
         },

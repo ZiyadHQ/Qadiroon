@@ -7,6 +7,12 @@ import 'package:flutter/widgets.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
 import 'package:qadiroon_front_end/universal_widgets/service_display_widgets/consulting_display_widget.dart';
 
+enum contentType
+{
+  text,
+  image,
+}
+
 class requestDisplayWidgetRecord
 {
 
@@ -144,6 +150,37 @@ class ConsultingRequestDisplayWidget extends StatelessWidget
 
 class detailedConsultingRequestDisplayWidget extends StatelessWidget
 {
+
+  Future<void> acceptRequestAndStartNewSession(BuildContext context) async
+  {
+
+    var doc = await FirebaseFirestore.instance.collection('Service').doc(data.serviceData.id).get();
+    if(doc.data()!['visible'] == false)
+    {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("لا يمكنك ان تقبل طلب آخر قبل ان تكمل الخدمة الجارية")));
+    }
+
+    await FirebaseFirestore.instance.collection('Service').doc(data.serviceData.id).update({'visible' : false});
+    var requestDoc = await FirebaseFirestore.instance.collection('ServiceRequest').doc(data.requestData.id).update({'accepted' : true});
+    await sendTestRequest
+    (
+      data.benData.id,
+      "تم قبول طلبك",
+"""
+تم قبول طلبك للخدمة: ${data.serviceData.data()!['name']}
+"""
+    );
+    await FirebaseFirestore.instance.collection('ServiceRequest').doc(data.requestData.id).collection('Chat').doc().set
+    (
+      {
+        'senderID' : FirebaseAuth.instance.currentUser!.uid,
+        'contentType' : contentType.text,
+        'content' : 'مرحباً في نافذة الدردشة, لا ترسل بيانات حساسة في هذه الدردشة, مثل رقم الهوية, أو الصور الشخصية',
+        'timeStamp' : DateTime.now().millisecondsSinceEpoch
+      } 
+    );
+
+  }
 
   detailedConsultingRequestDisplayWidget({required this.parentData, required this.data, required this.deleteElementFromList});
 

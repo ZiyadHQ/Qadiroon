@@ -45,7 +45,7 @@ class _BeneficiaryHomeScreenState extends State<BeneficiaryHomeScreen>
         children:
         [
           SizedBox(height: height * 0.05,),
-          TextButton(onPressed: () async {bool success = await downloadServices(context, list); setState(() {}); print("success?? $success");}, child: Text("download services")),
+          TextButton(onPressed: () async {bool success = await downloadServicesBen(context, list); setState(() {}); print("success?? $success");}, child: Text("download services")),
           StyledText(text: "الخدمات المتوفرة", size: 24, color: Colors.black, fontFamily: "Amiri", alignment: TextAlign.center,),
           Container
           (

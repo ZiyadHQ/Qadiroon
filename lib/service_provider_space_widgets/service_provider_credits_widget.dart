@@ -1,5 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
@@ -12,7 +13,38 @@ Future<bool> downloadServices(BuildContext context, List<DocumentSnapshot<Map<St
 
   try
   {
-    var querySnapshot = await FirebaseFirestore.instance.collection('Service').get();
+    var querySnapshot = await FirebaseFirestore.instance
+    .collection('Service')
+    //.where('visible', isEqualTo: true)
+    .where('userID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+    .get();
+    listRef.addAll
+    (
+      querySnapshot.docs
+    );
+  } catch (e) {
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("فشل التحميل")));
+    print("ERROR DOWNLOADING SERVICES FROM FIRESTORE: $e"); 
+    return false;
+  }
+
+  Navigator.pop(context);
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("نجح التحميل")));
+  return true;
+}
+
+Future<bool> downloadServicesBen(BuildContext context, List<DocumentSnapshot<Map<String, dynamic>>> listRef)async
+{
+  listRef.clear();
+  showDialog(context: context, builder: (context) => CircularProgressIndicator.adaptive(),);
+
+  try
+  {
+    var querySnapshot = await FirebaseFirestore.instance
+    .collection('Service')
+    .where('visible', isEqualTo: true)
+    .get();
     listRef.addAll
     (
       querySnapshot.docs
