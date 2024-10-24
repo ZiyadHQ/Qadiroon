@@ -48,7 +48,7 @@ ${widget.data.benData.data()!['Name']}
     {
       await sendTestRequest(widget.data.benData.id,
 """
-${widget.data.serviceData.data()!['Name']} 
+${widget.data.serviceProviderData.data()!['Name']} 
 """,
         messageText
       );
