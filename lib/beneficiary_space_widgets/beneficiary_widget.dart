@@ -124,7 +124,7 @@ class _BeneficiaryScreenState extends State<BeneficiaryScreen>
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != userPersonalAccountScreen){Beneficiary_changeBaseWidget(userPersonalAccountScreen(userData: widget.userData));}}, icon: (_currentWidget is userPersonalAccountScreen)? Icon(color: Colors.white,Icons.account_box) : Icon(Icons.account_box)),
             SizedBox(width: 32),
-            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen());}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
+            IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen){Beneficiary_changeBaseWidget(BeneficiaryCreditsScreen(userData: userData!,));}}, icon: (_currentWidget is BeneficiaryCreditsScreen)? Icon(color: Colors.white,Icons.info) : Icon(Icons.info)),
             SizedBox(width: 32),
             IconButton(onPressed: (){if(_currentWidget != BeneficiaryCreditsScreen){Beneficiary_changeBaseWidget(ServiceBrowserWidget());}}, icon: (_currentWidget is ServiceBrowserWidget)? Icon(color: Colors.white,Icons.search) : Icon(Icons.search)),
           ],

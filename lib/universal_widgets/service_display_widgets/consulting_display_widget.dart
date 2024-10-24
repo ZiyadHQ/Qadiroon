@@ -159,6 +159,7 @@ class _ConsultingDetailedWidgetState extends State<ConsultingDetailedWidget> {
     } catch (e)
     {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("حدثت مشكلة عند رفع طلبك")));
+      Navigator.pop(context);
       return false;  
     }
 
@@ -173,6 +174,7 @@ ${DateTime.now().toString()} :الوقت
     """;
     await sendTestRequest(data['serviceProviderID'].toString(), "طلب مستفيد خدمتك", messageBody);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("تم رفع الطلب بنجاح, قيد انتظار الرد من مقدم الخدمة")));
+    Navigator.pop(context);
     return true;
   }
 

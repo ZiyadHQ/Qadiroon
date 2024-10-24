@@ -73,7 +73,6 @@ class _serviceProviderHomeScreenState extends State<serviceProviderHomeScreen>
     var width = MediaQuery.of(context).size.width;
     return Column
     (
-
       children:
       [
         StyledText(text: "طلبات المستفيدين", size: 36, color: Colors.black, fontFamily: "Amiri"),

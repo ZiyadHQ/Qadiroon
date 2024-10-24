@@ -19,7 +19,6 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  bool testFlag = true;
 
   void initState() {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -45,7 +44,6 @@ class _StartScreenState extends State<StartScreen> {
                   user: value,
                   key: globalServiceProviderStateKey,
                 ));
-                testFlag = false;
                 setState(() {});
               }
             },
