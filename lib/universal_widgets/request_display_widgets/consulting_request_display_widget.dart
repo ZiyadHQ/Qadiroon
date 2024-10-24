@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:qadiroon_front_end/styled%20widgets/styled_text.dart';
+import 'package:qadiroon_front_end/universal_widgets/chat_room_widgets/chat_room_widget.dart';
 import 'package:qadiroon_front_end/universal_widgets/service_display_widgets/consulting_display_widget.dart';
 
 enum contentType
@@ -158,6 +159,7 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
     if(doc.data()!['visible'] == false)
     {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("لا يمكنك ان تقبل طلب آخر قبل ان تكمل الخدمة الجارية")));
+      return;
     }
 
     await FirebaseFirestore.instance.collection('Service').doc(data.serviceData.id).update({'visible' : false});
@@ -174,13 +176,35 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
     (
       {
         'senderID' : FirebaseAuth.instance.currentUser!.uid,
-        'contentType' : contentType.text,
+        'contentType' : contentType.text.toString(),
         'content' : 'مرحباً في نافذة الدردشة, لا ترسل بيانات حساسة في هذه الدردشة, مثل رقم الهوية, أو الصور الشخصية',
         'timeStamp' : DateTime.now().millisecondsSinceEpoch
       } 
     );
 
   }
+
+  Future<void> refuseService(BuildContext context) async
+  {
+                  showDialog(context: context, builder: (context) => CircularProgressIndicator());
+                  try
+                  {
+                    await FirebaseFirestore.instance.collection('ServiceRequest').doc(data.requestData.id).delete();
+                  } catch (e) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ERROR: $e")));
+                    return;
+                  }
+                  sendTestRequest(data.benData.id, "تم رفض طلبك لخدمة ما",
+"""
+الخدمة: ${data.serviceData.data()!['name']}
+مقدم الخدمة: ${data.serviceProviderData.data()!['Name']}
+"""
+                  );
+                  deleteElementFromList(parentData);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("removed successfully")));
+                  }
 
   detailedConsultingRequestDisplayWidget({required this.parentData, required this.data, required this.deleteElementFromList});
 
@@ -205,37 +229,36 @@ class detailedConsultingRequestDisplayWidget extends StatelessWidget
             children: 
             [
               Spacer(),
+
+              (data.requestData.data()!['accepted'] != true)?
               TextButton
               (
                 onPressed: () async 
-                {
-                  showDialog(context: context, builder: (context) => CircularProgressIndicator());
-                  try
-                  {
-                    await FirebaseFirestore.instance.collection('ServiceRequest').doc(data.requestData.id).delete();
-                  } catch (e) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("ERROR: $e")));
-                    return;
-                  }
-                  sendTestRequest(data.benData.id, "تم رفض طلبك لخدمة ما",
-"""
-الخدمة: ${data.serviceData.data()!['name']}
-مقدم الخدمة: ${data.serviceProviderData.data()!['Name']}
-"""
-                  );
-                  deleteElementFromList(parentData);
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("removed successfully")));
-                },
+                {await refuseService(context);},
                 child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "ارفض الطلب", size: 24, color: Colors.red, fontFamily: "Tajawal")),
-              ),
-              Spacer(),
+              )
+              :
+              SizedBox(),
+
+              (data.requestData.data()!['accepted'] != true)?
+              Spacer()
+              :
               TextButton
               (
-                onPressed: (){},
-                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "اقبل الطلب", size: 24, color: Colors.blue, fontFamily: "Tajawal")),
+                onPressed: ()
+                {
+                  showDialog(context: context, builder: (context) => ChatRoomScreen(data: data,),);
+                },
+                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "افتح نافذة الدردشة", size: 24, color: Colors.blue, fontFamily: "Tajawal")),
               ),
+              (data.requestData.data()!['accepted'] != true)?
+              TextButton
+              (
+                onPressed: () async {await acceptRequestAndStartNewSession(context);},
+                child: Container(decoration: BoxDecoration(color: Colors.white54, borderRadius: BorderRadius.circular(8)), child: StyledText(text: "اقبل الطلب", size: 24, color: Colors.blue, fontFamily: "Tajawal")),
+              )
+              :
+              SizedBox(),
               Spacer()
             ],
           )

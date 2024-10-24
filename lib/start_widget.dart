@@ -56,7 +56,7 @@ class _StartScreenState extends State<StartScreen> {
     super.initState();
   }
 
-  String imageURL = "https://cdn.discordapp.com/attachments/1185616288626790421/1297642156785143808/ktrrrr-8.png?ex=6718a52f&is=671753af&hm=44421ad21192fe7a4b10475e7356a321bbdd15a49ce76ce38da6f535e41de910&";
+  String imageURL = "https://kebar.sa/wp-content/uploads/sites/2220/2022/01/ktrrrr-8.png";
 
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -144,7 +144,7 @@ class _StartScreenState extends State<StartScreen> {
                   backgroundBlendMode: BlendMode.dstOut,
                   color: Colors.white.withAlpha(192),
                   borderRadius: BorderRadius.circular(24),
-                  image: DecorationImage(image: NetworkImage(imageURL))
+                  image: DecorationImage(image: AssetImage('assets/images/logo.png')),
                 ),
                 child: SizedBox(height: height * 0.15, width: width * 0.9,)
               ),
