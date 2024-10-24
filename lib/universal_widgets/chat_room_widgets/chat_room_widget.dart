@@ -23,6 +23,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen>
 
   Future<void> sendNewMessage(TextEditingController controller) async
   {
+    controller.clear();
     await FirebaseFirestore.instance.collection('ServiceRequest').doc(widget.data.requestData.id).collection('Chat')
     .doc()
     .set
@@ -34,7 +35,24 @@ class _ChatRoomScreenState extends State<ChatRoomScreen>
         'timeStamp' : DateTime.now()
       } 
     );
-    controller.clear();
+    if(widget.data.benData.id == FirebaseAuth.instance.currentUser!.uid)
+    {
+      await sendTestRequest(widget.data.serviceProviderData.id,
+"""
+${widget.data.benData.data()!['Name']} 
+""",
+        messageText
+      );
+    }
+    else
+    {
+      await sendTestRequest(widget.data.serviceProviderData.id,
+"""
+${widget.data.serviceData.data()!['Name']} 
+""",
+        messageText
+      );
+    }
   }
 
   String messageText = "";
